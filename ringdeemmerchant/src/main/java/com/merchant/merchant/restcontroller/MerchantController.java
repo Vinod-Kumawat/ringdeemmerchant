@@ -5,6 +5,7 @@ import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.util.ProductToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,9 +95,10 @@ public class MerchantController {
     public String saveProduct(@ModelAttribute("productForm") ProductPOJO productForm, Model model,HttpServletRequest request)
     {
         Product product=new Product();
+        String filename="";
         if(!productForm.getImage().isEmpty()) {
             String basePath=request.getServletContext().getRealPath("/productimage");
-            String filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getName()+".png";
+            filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getName()+".png";
             try {
                     byte[] bytes = productForm.getImage().getBytes();
 
@@ -107,7 +109,6 @@ public class MerchantController {
                     stream.close();
                     System.out.println(productForm.getImage().getName());
                     System.out.println(filename);
-                product.setImage(filename);
 
                 }catch (Exception ex)
                 {
@@ -117,17 +118,7 @@ public class MerchantController {
         }
 
         try {
-            if(null!=productForm.getProductId()){
-                product.setProductId(productForm.getProductId());
-            }
-
-            product.setProductName(productForm.getProductName());
-            product.setProductPoint(productForm.getProductPoint());
-            product.setMechantID(productForm.getMechantID());
-            product.setDescription(productForm.getDescription());
-            product.setShowOnDay(productForm.getShowOnDay());
-            product.setOtherInfo(productForm.getOtherInfo());
-
+            product=ProductToPOJOConverter.convertPojoToProduct(productForm,product,filename);
             product=productService.addProduct(product);
             if(null==product.getProductId())
             {
@@ -151,14 +142,7 @@ public class MerchantController {
     public String editProduct(@PathVariable Integer id , Model model) {
         Product product=productService.viewProductByID(id);
         ProductPOJO productPOJO=new ProductPOJO();
-        productPOJO.setProductId(product.getProductId());
-        productPOJO.setProductPoint(product.getProductPoint());
-        productPOJO.setProductName(product.getProductName());
-        productPOJO.setStatus(product.getStatus());
-        productPOJO.setDescription(product.getDescription());
-        productPOJO.setOtherInfo(product.getOtherInfo());
-        productPOJO.setMechantID(product.getMechantID());
-        productPOJO.setShowOnDay(product.getShowOnDay());
+        productPOJO=ProductToPOJOConverter.convertProductToPOJO(product,productPOJO);
         System.out.println(product.toString());
         model.addAttribute("productForm",productPOJO);
         System.out.println("Edit P");
