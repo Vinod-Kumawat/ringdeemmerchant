@@ -44,6 +44,7 @@ public class AdminRestController {
             System.out.println("in session");
             flag=true;
         }
+        System.out.println("Session check properly");
         return flag;
     }
 
