@@ -91,8 +91,9 @@ public class AdminRestController {
          //   session.setAttribute("admin",null);
             session.removeAttribute("admin");
             session.invalidate();;
-            model.addAttribute("loginForm", new Admin());
+
         }
+        model.addAttribute("loginForm", new Admin());
         return "login";
     }
 
@@ -107,7 +108,7 @@ public class AdminRestController {
     public String addMerchant(Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-          return "login";
+          return logout(request,model);
         }
         model.addAttribute("merchantForm", new Merchant());
         System.out.println("Add M");
@@ -118,7 +119,7 @@ public class AdminRestController {
     public String saveMerchant(@ModelAttribute("merchantForm") Merchant merchantForm,Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         Merchant merchant=null;
         try {
@@ -153,7 +154,7 @@ public class AdminRestController {
     public String editMerchant(@PathVariable Integer id , Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         Merchant merchant=merchantService.viewMerchantByID(id);
         System.out.println(merchant.toString());
@@ -164,10 +165,10 @@ public class AdminRestController {
     }
 
     @RequestMapping("/deleteMerchant")
-    public String deleteMerchant(HttpServletRequest request)
+    public String deleteMerchant(HttpServletRequest request,Model model)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         System.out.println("Delete M");
         return "admin/merchantDetail";
@@ -177,7 +178,7 @@ public class AdminRestController {
     public String viewMerchant(Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
 
         List<Merchant> merchantList=merchantService.viewMerchant();
@@ -190,7 +191,7 @@ public class AdminRestController {
     public String viewProduct(Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         List<Product> productList=productService.viewProduct();
         model.addAttribute("productList",productList);
@@ -200,30 +201,30 @@ public class AdminRestController {
     }
 
     @RequestMapping("/viewTransaction")
-    public String viewTransaction(HttpServletRequest request)
+    public String viewTransaction(HttpServletRequest request,Model model)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         System.out.println("view T");
         return "admin/transactionDetail";
     }
 
     @RequestMapping("/viewTotalSell")
-    public String viewTotalSell(HttpServletRequest request)
+    public String viewTotalSell(HttpServletRequest request, Model model)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         System.out.println("view T S");
         return "admin/totalSellDetail";
     }
 
     @RequestMapping("/viewPoint")
-    public String viewPoint(HttpServletRequest request)
+    public String viewPoint(HttpServletRequest request, Model model)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         System.out.println("view c point");
         return "admin/comsumePointByMerchant";
@@ -233,7 +234,7 @@ public class AdminRestController {
     public String viewProductByMerchant(@PathVariable Integer id,Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
-            return "login";
+            return logout(request,model);
         }
         List<Product> productList=productService.viewProductByMerchantID(id);
         model.addAttribute("productList",productList);
