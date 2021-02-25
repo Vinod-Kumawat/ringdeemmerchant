@@ -117,6 +117,9 @@ public class MerchantController {
         }
 
         try {
+            if(null!=productForm.getProductId()){
+                product.setProductId(productForm.getProductId());
+            }
 
             product.setProductName(productForm.getProductName());
             product.setProductPoint(productForm.getProductPoint());
