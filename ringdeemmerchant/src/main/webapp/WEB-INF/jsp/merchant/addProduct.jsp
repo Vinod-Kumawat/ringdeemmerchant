@@ -111,7 +111,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="productForm" action="${contextPath}/merchant/saveProduct" class="form-horizontal">
+                            <form:form method="post" modelAttribute="productForm"  action="${contextPath}/merchant/saveProduct" class="form-horizontal"  enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Product</h4>
                                     <div class="row">

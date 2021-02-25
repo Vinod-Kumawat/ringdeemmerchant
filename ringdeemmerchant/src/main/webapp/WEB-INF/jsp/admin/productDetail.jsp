@@ -117,6 +117,7 @@
                                                 <th>Show On Day</th>
                                                 <th>Description</th>
                                                 <th>Other Info</th>
+                                                <th>Photo</th>
                                                 <th>Status</th>
                                                 <!--
                                                 <th>Action</th>
@@ -136,6 +137,7 @@
                                                 <td>${product.showOnDay}</td>
                                                 <td>${product.description}</td>
                                                 <td>${product.otherInfo}</td>
+                                                <td><img src="/productimage/${product.image}" alt="product" width="50" height="60"></td>
                                                 <td>${product.status}</td>
                                                 <!--
                                                 <td>
@@ -157,6 +159,7 @@
                                                 <th>Show On Day</th>
                                                 <th>Description</th>
                                                 <th>Other Info</th>
+                                                <th>Photo</th>
                                                 <th>Status</th>
                                                 <!--
                                                 <th>Action</th>

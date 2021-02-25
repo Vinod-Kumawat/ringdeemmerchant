@@ -2,18 +2,19 @@ package com.merchant.merchant.restcontroller;
 
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.*;
 import java.util.List;
 
 @Controller
@@ -83,18 +84,48 @@ public class MerchantController {
 
     @RequestMapping("merchant/addProduct")
     public String addProduct(Model model,HttpServletRequest request) {
-        Product product=new Product();
-        model.addAttribute("productForm", product);
+        ProductPOJO productPOJO=new ProductPOJO();
+        model.addAttribute("productForm", productPOJO);
         System.out.println("Add P");
         return "merchant/addProduct";
     }
 
     @RequestMapping("merchant/saveProduct")
-    public String saveProduct(@ModelAttribute("productForm") Product productForm,Model model)
+    public String saveProduct(@ModelAttribute("productForm") ProductPOJO productForm, Model model,HttpServletRequest request)
     {
-        Product product=null;
+        Product product=new Product();
+        if(!productForm.getImage().isEmpty()) {
+            String basePath=request.getServletContext().getRealPath("/productimage");
+            String filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getName()+".png";
+            try {
+                    byte[] bytes = productForm.getImage().getBytes();
+
+                    File serverFile = new File(basePath+ "/" +filename);
+                    BufferedOutputStream stream = new BufferedOutputStream(
+                            new FileOutputStream(serverFile));
+                    stream.write(bytes);
+                    stream.close();
+                    System.out.println(productForm.getImage().getName());
+                    System.out.println(filename);
+                product.setImage(filename);
+
+                }catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+
+        }
+
         try {
-            product=productService.addProduct(productForm);
+
+            product.setProductName(productForm.getProductName());
+            product.setProductPoint(productForm.getProductPoint());
+            product.setMechantID(productForm.getMechantID());
+            product.setDescription(productForm.getDescription());
+            product.setShowOnDay(productForm.getShowOnDay());
+            product.setOtherInfo(productForm.getOtherInfo());
+
+            product=productService.addProduct(product);
             if(null==product.getProductId())
             {
                 model.addAttribute("message","Product added with ProductID "+product.getProductId());
@@ -116,8 +147,17 @@ public class MerchantController {
     @RequestMapping(value="merchant/editProduct/{id}")
     public String editProduct(@PathVariable Integer id , Model model) {
         Product product=productService.viewProductByID(id);
+        ProductPOJO productPOJO=new ProductPOJO();
+        productPOJO.setProductId(product.getProductId());
+        productPOJO.setProductPoint(product.getProductPoint());
+        productPOJO.setProductName(product.getProductName());
+        productPOJO.setStatus(product.getStatus());
+        productPOJO.setDescription(product.getDescription());
+        productPOJO.setOtherInfo(product.getOtherInfo());
+        productPOJO.setMechantID(product.getMechantID());
+        productPOJO.setShowOnDay(product.getShowOnDay());
         System.out.println(product.toString());
-        model.addAttribute("productForm",product);
+        model.addAttribute("productForm",productPOJO);
         System.out.println("Edit P");
         return "merchant/editProduct";
     }
