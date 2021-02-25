@@ -104,17 +104,22 @@ public class AdminRestController {
     }
 
     @RequestMapping("/addMerchant")
-    public String addMerchant(Model model)
+    public String addMerchant(Model model,HttpServletRequest request)
     {
+        if(!checkAdminSession(request)){
+          return "login";
+        }
         model.addAttribute("merchantForm", new Merchant());
         System.out.println("Add M");
         return "admin/addmerchant";
     }
 
     @RequestMapping("/saveMerchant")
-    public String saveMerchant(@ModelAttribute("merchantForm") Merchant merchantForm,Model model)
+    public String saveMerchant(@ModelAttribute("merchantForm") Merchant merchantForm,Model model,HttpServletRequest request)
     {
-
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         Merchant merchant=null;
         try {
              merchant=merchantService.addMerchant(merchantForm);
@@ -145,7 +150,11 @@ public class AdminRestController {
     }
 
     @RequestMapping(value="/editMerchant/{id}")
-    public String editMerchant(@PathVariable Integer id , Model model) {
+    public String editMerchant(@PathVariable Integer id , Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         Merchant merchant=merchantService.viewMerchantByID(id);
         System.out.println(merchant.toString());
         model.addAttribute("merchantForm",merchant);
@@ -155,13 +164,21 @@ public class AdminRestController {
     }
 
     @RequestMapping("/deleteMerchant")
-    public String deleteMerchant() {
+    public String deleteMerchant(HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         System.out.println("Delete M");
         return "admin/merchantDetail";
     }
 
     @RequestMapping("/viewMerchant")
-    public String viewMerchant(Model model){
+    public String viewMerchant(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
 
         List<Merchant> merchantList=merchantService.viewMerchant();
         model.addAttribute("merchantList",merchantList);
@@ -170,7 +187,11 @@ public class AdminRestController {
     }
 
     @RequestMapping("/viewProduct")
-    public String viewProduct(Model model) {
+    public String viewProduct(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         List<Product> productList=productService.viewProduct();
         model.addAttribute("productList",productList);
 
@@ -179,25 +200,41 @@ public class AdminRestController {
     }
 
     @RequestMapping("/viewTransaction")
-    public String viewTransaction() {
+    public String viewTransaction(HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         System.out.println("view T");
         return "admin/transactionDetail";
     }
 
     @RequestMapping("/viewTotalSell")
-    public String viewTotalSell() {
+    public String viewTotalSell(HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         System.out.println("view T S");
         return "admin/totalSellDetail";
     }
 
     @RequestMapping("/viewPoint")
-    public String viewPoint() {
+    public String viewPoint(HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         System.out.println("view c point");
         return "admin/comsumePointByMerchant";
     }
 
     @RequestMapping("viewProductByMerchant/{id}")
-    public String viewProductByMerchant(@PathVariable Integer id,Model model){
+    public String viewProductByMerchant(@PathVariable Integer id,Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return "login";
+        }
         List<Product> productList=productService.viewProductByMerchantID(id);
         model.addAttribute("productList",productList);
         System.out.println("view P");
