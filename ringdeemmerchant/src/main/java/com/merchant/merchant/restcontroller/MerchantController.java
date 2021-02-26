@@ -5,6 +5,7 @@ import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.ProductToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -96,25 +97,16 @@ public class MerchantController {
     {
         Product product=new Product();
         String filename="";
+        System.out.println(productForm.getImage().getOriginalFilename().replace(" ","_"));
         if(!productForm.getImage().isEmpty()) {
             String basePath=request.getServletContext().getRealPath("/productimage");
-            filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getName()+".png";
+            filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getOriginalFilename().replace(" ","_");
             try {
-                    byte[] bytes = productForm.getImage().getBytes();
-
-                    File serverFile = new File(basePath+ "/" +filename);
-                    BufferedOutputStream stream = new BufferedOutputStream(
-                            new FileOutputStream(serverFile));
-                    stream.write(bytes);
-                    stream.close();
-                    System.out.println(productForm.getImage().getName());
-                    System.out.println(filename);
-
+                    FileUploadUtil.uploadFile(productForm.getImage().getBytes(),basePath,filename);
                 }catch (Exception ex)
                 {
                     System.out.println(ex.getMessage());
                 }
-
         }
 
         try {
@@ -132,7 +124,7 @@ public class MerchantController {
         catch (Exception ex)
         {
             model.addAttribute("productForm", null!=product?product: new Product());
-            model.addAttribute("message","Product added with productID "+product.getProductId());
+            model.addAttribute("message","Failed to add Product"+product.getProductId());
 
         }
         return "merchant/addProduct";
