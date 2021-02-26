@@ -1,8 +1,10 @@
 package com.merchant.merchant.restcontroller;
 
 import com.merchant.merchant.bean.Admin;
+import com.merchant.merchant.bean.Country;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.service.AdminService;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,9 @@ public class AdminRestController {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    CountryRepository countryRepository;
 
     HttpSession session=null;
 
@@ -242,5 +248,16 @@ public class AdminRestController {
         return "admin/productDetail";
     }
 
+    @ModelAttribute("countryList")
+    public Map<String, String> getCountryList()
+    {
+        Map<String, String> countryList=new HashMap<>();
+        List<Country> countryList1=countryRepository.findAll();
+        for(Country country:countryList1)
+        {
+            countryList.put(country.getName(),country.getName());
+        }
+        return countryList;
+    }
 
 }
