@@ -98,7 +98,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal">
+                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
                                 <spring:bind path="merchantId">
                                 <form:hidden path="merchantId"></form:hidden>
                                 </spring:bind>
@@ -224,7 +224,13 @@
                                             <label for="country" class="col-sm-3 text-left control-label col-form-label">Country </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="country">
+                                                 <form:select path="country" class="form-control" id="country">
+                                                    <form:option value="NONE"  label="Select" />
+                                                    <form:options items="${countryList}"/>
+                                                 </form:select>
+                                                 <!--
                                                 <form:input type="text" path="country" class="form-control" id="country" placeholder="Country"></form:input>
+                                                -->
                                             </spring:bind>
                                             </div>
                                         </div>

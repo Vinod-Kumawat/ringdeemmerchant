@@ -3,10 +3,12 @@ package com.merchant.merchant.restcontroller;
 import com.merchant.merchant.bean.Admin;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.dto.MerchantPOJO;
 import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
 import com.merchant.merchant.util.FileUploadUtil;
+import com.merchant.merchant.util.MerchantToPOJOConverter;
 import com.merchant.merchant.util.ProductToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -95,9 +97,12 @@ public class MerchantController {
             return logout(request,model);
         }
 
+        MerchantPOJO merchantPOJO=new MerchantPOJO();
         Merchant merchant=merchantService.viewMerchantByID(id);
+        merchantPOJO= MerchantToPOJOConverter.convertMerchantToPOJO(merchant,merchantPOJO);
+
         System.out.println(merchant.toString());
-        model.addAttribute("merchantForm",merchant);
+        model.addAttribute("merchantForm",merchantPOJO);
         System.out.println("Edit M");
 
         return "merchant/editMerchant";
@@ -109,7 +114,6 @@ public class MerchantController {
         {
             return logout(request,model);
         }
-
 
         List<Merchant> merchantList=merchantService.viewMerchant();
         model.addAttribute("merchantList",merchantList);

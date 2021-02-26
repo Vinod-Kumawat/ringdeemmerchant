@@ -103,7 +103,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal">
+                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Merchant</h4>
                                     <div class="row">
@@ -176,7 +176,7 @@
                                             <label for="image" class="col-sm-3 text-left control-label col-form-label">Image </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="image">
-                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="Mobile Number here"></form:input>
+                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="photo"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>

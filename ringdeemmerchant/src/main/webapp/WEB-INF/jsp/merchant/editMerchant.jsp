@@ -109,7 +109,7 @@
                                             <label for="company" class="col-sm-3 text-left control-label col-form-label">Company Name</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="companyName">
-                                                <form:input type="text" path="companyName" class="form-control" id="company"  placeholder="Company Name" ></form:input>
+                                                <form:input type="text" path="companyName" class="form-control" id="company"  placeholder="Company Name" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -117,7 +117,7 @@
                                             <label for="merchantEmail" class="col-sm-3 text-left control-label col-form-label">Merchant Email</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="merchantMail">
-                                                <form:input  type="text" path="merchantMail" class="form-control" id="merchantEmail" placeholder="Merchant Email" ></form:input>
+                                                <form:input  type="text" path="merchantMail" class="form-control" id="merchantEmail" placeholder="Merchant Email" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -128,7 +128,7 @@
                                             <label for="password" class="col-sm-3 text-left control-label col-form-label">Set Password</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="password">
-                                                <form:input  type="password" path="password" class="form-control" id="password" placeholder="Password" ></form:input>
+                                                <form:input  type="password" path="password" class="form-control" id="password" placeholder="Password" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -136,7 +136,7 @@
                                             <label for="contactName" class="col-sm-3 text-left control-label col-form-label">Contact Name</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="contactName">
-                                               <form:input type="text" path="contactName" class="form-control" id="lname" placeholder="Last Name Here" ></form:input>
+                                               <form:input type="text" path="contactName" class="form-control" id="lname" placeholder="Last Name Here" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -147,7 +147,7 @@
                                             <label for="countryCode" class="col-sm-3 text-left control-label col-form-label">Country Code</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="countryCode">
-                                                <form:input type="text" path="countryCode" class="form-control" id="countryCode" placeholder="Country Code" ></form:input>
+                                                <form:input type="text" path="countryCode" class="form-control" id="countryCode" placeholder="Country Code" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -155,7 +155,7 @@
                                             <label for="mobileNumber" class="col-sm-3 text-left control-label col-form-label">Mobile Number</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="mobileNumber">
-                                               <form:input type="text" path="mobileNumber" class="form-control" id="mobileNumber" placeholder="Mobile Number here" ></form:input>
+                                               <form:input type="text" path="mobileNumber" class="form-control" id="mobileNumber" placeholder="Mobile Number here" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -166,7 +166,7 @@
                                             <label for="description" class="col-sm-3 text-left control-label col-form-label">Description </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="description">
-                                                <form:textarea type="textarea" path="description" class="form-control" id="description" placeholder="description here" ></form:textarea>
+                                                <form:textarea type="textarea" path="description" class="form-control" id="description" placeholder="description here" readonly="true"></form:textarea>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -174,7 +174,7 @@
                                             <label for="image" class="col-sm-3 text-left control-label col-form-label">Image </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="image">
-                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="Mobile Number here" ></form:input>
+                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="Mobile Number here" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -186,7 +186,7 @@
                                             <label for="businessAddress" class="col-sm-6 text-left control-label col-form-label">Business Address</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="businessAddress">
-                                                <form:textarea path="businessAddress" class="form-control" id="businessAddress" placeholder="Business Address" ></form:textarea>
+                                                <form:textarea path="businessAddress" class="form-control" id="businessAddress" placeholder="Business Address" readonly="true"></form:textarea>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -194,7 +194,7 @@
                                             <label for="businessNumber" class="col-sm-6 text-left control-label col-form-label">Business Number</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="businessNumber">
-                                               <form:input type="text" path="businessNumber" class="form-control" id="businessNumber" placeholder="Business Number here" ></form:input>
+                                               <form:input type="text" path="businessNumber" class="form-control" id="businessNumber" placeholder="Business Number here" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -205,7 +205,7 @@
                                             <label for="taxNumber" class="col-sm-3 text-left control-label col-form-label">Tax Number </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="taxNumber">
-                                                <form:input type="text" path="taxNumber" class="form-control" id="taxNumber" placeholder="Tax Number" ></form:input>
+                                                <form:input type="text" path="taxNumber" class="form-control" id="taxNumber" placeholder="Tax Number" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -213,7 +213,7 @@
                                             <label for="vatTax" class="col-sm-3 text-left control-label col-form-label">Vat Tax</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="vatTax">
-                                               <form:input type="text" path="vatTax" class="form-control" id="vatTax" placeholder="Vat Tax" ></form:input>
+                                               <form:input type="text" path="vatTax" class="form-control" id="vatTax" placeholder="Vat Tax" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -224,7 +224,7 @@
                                             <label for="country" class="col-sm-3 text-left control-label col-form-label">Country </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="country">
-                                                <form:input type="text" path="country" class="form-control" id="country" placeholder="Country" ></form:input>
+                                                <form:input type="text" path="country" class="form-control" id="country" placeholder="Country" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -232,7 +232,7 @@
                                             <label for="point" class="col-sm-3 text-left control-label col-form-label">Point</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="point">
-                                               <form:input type="text" path="point" class="form-control" id="point" placeholder="point" ></form:input>
+                                               <form:input type="text" path="point" class="form-control" id="point" placeholder="point" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -242,7 +242,7 @@
                                 </div>
                                 <div class="border-top">
                                     <div class="card-body">
-                                         <button class="btn btn-success float-right" type="submit" disabled>Save Merchant</button>
+                                         <button class="btn btn-success float-right" type="submit" disabled="true">Save Merchant</button>
                                     </div>
                                 </div>
                             </form:form>

@@ -5,9 +5,12 @@ import com.merchant.merchant.bean.Country;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.dao.CountryRepository;
+import com.merchant.merchant.dto.MerchantPOJO;
 import com.merchant.merchant.service.AdminService;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.util.FileUploadUtil;
+import com.merchant.merchant.util.MerchantToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -116,20 +119,32 @@ public class AdminRestController {
         if(!checkAdminSession(request)){
           return logout(request,model);
         }
-        model.addAttribute("merchantForm", new Merchant());
+        model.addAttribute("merchantForm", new MerchantPOJO());
         System.out.println("Add M");
         return "admin/addmerchant";
     }
 
     @RequestMapping("/saveMerchant")
-    public String saveMerchant(@ModelAttribute("merchantForm") Merchant merchantForm,Model model,HttpServletRequest request)
+    public String saveMerchant(@ModelAttribute("merchantForm") MerchantPOJO merchantForm,Model model,HttpServletRequest request)
     {
         if(!checkAdminSession(request)){
             return logout(request,model);
         }
-        Merchant merchant=null;
+        Merchant merchant=new Merchant();
+        String filename="";
         try {
-             merchant=merchantService.addMerchant(merchantForm);
+            if(!merchantForm.getImage().isEmpty()) {
+                String basePath=request.getServletContext().getRealPath("/merchantimage");
+                filename=merchantForm.getContactName()+ merchantForm.getImage().getOriginalFilename().replace(" ","_");
+                try {
+                    FileUploadUtil.uploadFile(merchantForm.getImage().getBytes(),basePath,filename);
+                }catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            merchant=MerchantToPOJOConverter.convertPojoToMerchant(merchantForm,merchant,filename);
+            merchant=merchantService.addMerchant(merchant);
             System.out.println(merchantForm.getCompanyName());
 
             // model.addAttribute("merchantForm", new Merchant());
@@ -162,9 +177,11 @@ public class AdminRestController {
         if(!checkAdminSession(request)){
             return logout(request,model);
         }
+        MerchantPOJO merchantPOJO=new MerchantPOJO();
         Merchant merchant=merchantService.viewMerchantByID(id);
+        merchantPOJO=MerchantToPOJOConverter.convertMerchantToPOJO(merchant,merchantPOJO);
         System.out.println(merchant.toString());
-        model.addAttribute("merchantForm",merchant);
+        model.addAttribute("merchantForm",merchantPOJO);
         System.out.println("Edit M");
 
         return "admin/editMerchant";
