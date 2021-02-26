@@ -1,5 +1,6 @@
 package com.merchant.merchant.restcontroller;
 
+import com.merchant.merchant.bean.Admin;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.dto.ProductPOJO;
@@ -30,6 +31,35 @@ public class MerchantController {
 
     HttpSession session;
 
+    public boolean checkMerchantSession(HttpServletRequest request)
+    {
+        boolean flag=false;
+        session=request.getSession();
+        if(null!=session && null!=session.getAttribute("merchant")){
+            Merchant merchant=(Merchant) session.getAttribute("merchant");
+            session.setAttribute("merchant",merchant);
+            System.out.println("in session");
+            flag=true;
+        }
+        System.out.println("Session check properly merchant");
+        return flag;
+    }
+
+    @RequestMapping("/merchant/logout")
+    public String logout(HttpServletRequest request,Model model)
+    {
+        session=request.getSession();
+        if(null!=session && null!=session.getAttribute("merchant"))
+        {
+            //   session.setAttribute("admin",null);
+            session.removeAttribute("merchant");
+            session.invalidate();;
+
+        }
+        model.addAttribute("merchantLoginForm", new Merchant());
+        return "merchant/login";
+    }
+
     @RequestMapping("/merchant/")
     public String Test(Model model)
     {
@@ -39,23 +69,32 @@ public class MerchantController {
     }
 
     @PostMapping("merchant/login")
-    public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm, HttpServletRequest request)
-    {
-        Merchant merchant=merchantService.getMerchantByEmail(merchantLoginForm.getMerchantMail());
-        if(merchant.getPassword().equals(merchantLoginForm.getPassword()))
-        {
-            //if(null==request.getSession()){
-                session= request.getSession();
+    public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm, HttpServletRequest request) {
+        session = request.getSession();
+        if (checkMerchantSession(request)) {
+            // do nothing
+        } else {
+            Merchant merchant = merchantService.getMerchantByEmail(merchantLoginForm.getMerchantMail());
+            if (merchant.getPassword().equals(merchantLoginForm.getPassword())) {
+                //if(null==request.getSession()){
+                session = request.getSession();
                 session.setAttribute("merchant", merchant);
-            //}
-          System.out.println("login Successfull");
+                //}
+                System.out.println("login Successfull");
+            }
+            // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
+
         }
-       // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
         return "merchant/home";
     }
 
     @RequestMapping(value="/merchant/editMerchant/{id}")
-    public String editMerchant(@PathVariable Integer id , Model model) {
+    public String editMerchant(@PathVariable Integer id , Model model, HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
         Merchant merchant=merchantService.viewMerchantByID(id);
         System.out.println(merchant.toString());
         model.addAttribute("merchantForm",merchant);
@@ -65,7 +104,12 @@ public class MerchantController {
     }
 
     @RequestMapping("merchant/viewMerchant")
-    public String viewMerchant(Model model){
+    public String viewMerchant(Model model,HttpServletRequest request){
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
 
         List<Merchant> merchantList=merchantService.viewMerchant();
         model.addAttribute("merchantList",merchantList);
@@ -75,6 +119,10 @@ public class MerchantController {
 
     @RequestMapping("merchant/viewProduct")
     public String viewProduct(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
         Integer mid=getMerchantIDBySession(request);
         if(mid>0) {
             List<Product> productList = productService.viewProductByMerchantID(mid);
@@ -86,6 +134,10 @@ public class MerchantController {
 
     @RequestMapping("merchant/addProduct")
     public String addProduct(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
         ProductPOJO productPOJO=new ProductPOJO();
         model.addAttribute("productForm", productPOJO);
         System.out.println("Add P");
@@ -95,6 +147,11 @@ public class MerchantController {
     @RequestMapping("merchant/saveProduct")
     public String saveProduct(@ModelAttribute("productForm") ProductPOJO productForm, Model model,HttpServletRequest request)
     {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
         Product product=new Product();
         String filename="";
         System.out.println(productForm.getImage().getOriginalFilename().replace(" ","_"));
@@ -131,7 +188,12 @@ public class MerchantController {
     }
 
     @RequestMapping(value="merchant/editProduct/{id}")
-    public String editProduct(@PathVariable Integer id , Model model) {
+    public String editProduct(@PathVariable Integer id , Model model, HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
         Product product=productService.viewProductByID(id);
         ProductPOJO productPOJO=new ProductPOJO();
         productPOJO=ProductToPOJOConverter.convertProductToPOJO(product,productPOJO);
@@ -144,6 +206,10 @@ public class MerchantController {
     @RequestMapping(value = "merchant/deleteProduct/{id}")
     public String deleteProduct(@PathVariable Integer id,Model model,HttpServletRequest request)
     {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
         System.out.println("delete product"+ id);
         productService.deleteProductByID(id);
         Integer mid=getMerchantIDBySession(request);
