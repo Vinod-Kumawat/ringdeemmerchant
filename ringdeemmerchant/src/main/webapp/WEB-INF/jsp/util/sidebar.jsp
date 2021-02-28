@@ -1,3 +1,6 @@
+ <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
  <div class="scroll-sidebar">
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
@@ -5,21 +8,21 @@
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">Merchant </span></a>
                              <ul aria-expanded="false" class="collapse  first-level">
-                                   <li class="sidebar-item"><a href="/addMerchant" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> Add New Merchant </span></a></li>
-                                   <li class="sidebar-item"><a href="/viewMerchant" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Merchant </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/addMerchant" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> Add New Merchant </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewMerchant" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Merchant </span></a></li>
                                    <!--
-                                   <li class="sidebar-item"><a href="/viewProduct" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Product</span></a></li>
-                                   <li class="sidebar-item"><a href="/viewTransaction" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Transaction</span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewProduct" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Product</span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewTransaction" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Transaction</span></a></li>
 
-                                   <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Form Wizard </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/form-wizard.html" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Form Wizard </span></a></li>
                                    -->
                              </ul>
                          </li>
 
-                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewProduct" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Merchant's Product</span></a></li>
-                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewTransaction" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu"> Merchant's Transaction</span></a></li>
-                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewTotalSell" aria-expanded="false"><i class="mdi mdi-transfer"></i><span class="hide-menu"> Merchant's Total sell</span></a></li>
-                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewPoint" aria-expanded="false"><i class="mdi mdi-coin"></i><span class="hide-menu"> Consume Point By Merchant </span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewProduct" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Merchant's Product</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewTransaction" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu"> Merchant's Transaction</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewTotalSell" aria-expanded="false"><i class="mdi mdi-transfer"></i><span class="hide-menu"> Merchant's Total sell</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewPoint" aria-expanded="false"><i class="mdi mdi-coin"></i><span class="hide-menu"> Consume Point By Merchant </span></a></li>
 
 <!--
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="charts.html" aria-expanded="false"><i class="mdi mdi-chart-bar"></i><span class="hide-menu">Charts</span></a></li>

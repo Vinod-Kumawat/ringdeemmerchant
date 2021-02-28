@@ -47,11 +47,11 @@
             <div class="auth-box bg-dark border-top border-secondary">
                 <div id="loginform">
                     <div class="text-center p-t-20 p-b-20">
-                        <span class="db"><img src="../../assets/images/logo.png" alt="logo" /></span>
+                        <span class="db"><img src="<%=request.getContextPath()%>/assets/images/logo.png" alt="logo" /></span>
                     </div>
                     <!-- Form -->
 
-                    <form:form method="post" modelAttribute="merchantLoginForm" action="${contextPath}/merchant/login" class="form-horizontal m-t-20" id="loginform1">
+                    <form:form method="post" modelAttribute="merchantLoginForm" action="<%=request.getContextPath()%>/merchant/login" class="form-horizontal m-t-20" id="loginform1">
                         <div class="row p-b-30">
                             <div class="col-12">
                                 <div class="input-group mb-3">
