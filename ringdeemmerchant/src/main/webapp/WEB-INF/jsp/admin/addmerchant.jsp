@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -103,7 +104,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="merchantForm" action="<%=request.getContextPath()%>/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
+                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Merchant</h4>
                                     <div class="row">

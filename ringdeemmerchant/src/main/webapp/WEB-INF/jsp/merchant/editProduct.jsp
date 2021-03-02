@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@page import="com.merchant.merchant.bean.Merchant"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <%
  // get session attribute
                  Merchant merchant=null;
@@ -111,7 +112,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="productForm" action="<%=request.getContextPath()%>/merchant/saveProduct" class="form-horizontal" enctype="multipart/form-data">
+                            <form:form method="post" modelAttribute="productForm" action="${contextPath}/merchant/saveProduct" class="form-horizontal" enctype="multipart/form-data">
                                 <spring:bind path="productId">
                                 <form:hidden path="productId"></form:hidden>
                                 </spring:bind>

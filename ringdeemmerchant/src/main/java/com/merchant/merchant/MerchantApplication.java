@@ -9,12 +9,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 @SpringBootApplication
-public class MerchantApplication /*extends SpringBootServletInitializer {
+public class MerchantApplication extends SpringBootServletInitializer {
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(MerchantApplication.class);
 		//return super.configure(builder);
-	}*/{
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(MerchantApplication.class, args);

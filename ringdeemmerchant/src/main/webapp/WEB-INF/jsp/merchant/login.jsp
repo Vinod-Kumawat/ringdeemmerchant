@@ -1,7 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html dir="ltr">
@@ -51,7 +50,7 @@
                     </div>
                     <!-- Form -->
 
-                    <form:form method="post" modelAttribute="merchantLoginForm" action="<%=request.getContextPath()%>/merchant/login" class="form-horizontal m-t-20" id="loginform1">
+                    <form:form method="post" modelAttribute="merchantLoginForm" action="${contextPath}/merchant/login" class="form-horizontal m-t-20" id="loginform1">
                         <div class="row p-b-30">
                             <div class="col-12">
                                 <div class="input-group mb-3">

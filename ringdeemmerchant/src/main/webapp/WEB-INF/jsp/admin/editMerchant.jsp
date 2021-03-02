@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -98,7 +99,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <form:form method="post" modelAttribute="merchantForm" action="<%=request.getContextPath()%>/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
+                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
                                 <spring:bind path="merchantId">
                                 <form:hidden path="merchantId"></form:hidden>
                                 </spring:bind>

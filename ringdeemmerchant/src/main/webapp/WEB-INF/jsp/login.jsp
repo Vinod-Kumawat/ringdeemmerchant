@@ -76,7 +76,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <div class="p-t-20">
-                                      <!--   <button class="btn btn-info" id="to-recover" type="button"><i class="fa fa-lock m-r-5"></i> Lost password?</button> -->
+                                        <a class="btn btn-info" id="to-recover" type="button" href="<%=request.getContextPath()%>/merchant/"><i class="fa fa-lock m-r-5"></i> Login As Merchant</a>
                                         <button class="btn btn-success float-right" type="submit">Login</button>
                                     </div>
                                 </div>
