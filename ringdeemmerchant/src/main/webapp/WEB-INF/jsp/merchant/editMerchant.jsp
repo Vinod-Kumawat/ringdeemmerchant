@@ -98,7 +98,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <form:form method="post" modelAttribute="merchantForm" action="#/saveMerchant" class="form-horizontal">
+                            <form:form method="post" modelAttribute="merchantForm" action="/saveMerchant" class="form-horizontal">
                                 <spring:bind path="merchantId">
                                 <form:hidden path="merchantId"></form:hidden>
                                 </spring:bind>

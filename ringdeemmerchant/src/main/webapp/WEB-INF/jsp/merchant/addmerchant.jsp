@@ -103,7 +103,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="merchantForm" action="<%=request.getContextPath()%>/saveMerchant" class="form-horizontal">
+                            <form:form method="post" modelAttribute="merchantForm" action="/saveMerchant" class="form-horizontal">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Merchant</h4>
                                     <div class="row">
