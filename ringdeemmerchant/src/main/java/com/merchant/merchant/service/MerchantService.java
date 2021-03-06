@@ -12,4 +12,5 @@ public interface MerchantService {
     public Merchant viewMerchantByID(int merchantId);
     public List<Merchant> viewMerchantByCountry(String country);
     public Merchant getMerchantByEmail(String merchantMail);
+    public boolean isMerchantAlreadyRegisterByEmail(String email);
 }

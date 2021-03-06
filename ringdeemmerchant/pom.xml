@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ringdeemmerchant</name>
 	<description>merchant and admin Panel</description>
-	<packaging>war</packaging>
+	<!--<packaging>war</packaging>-->
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<!--<scope>provided</scope>-->
 		</dependency>
 
 		<!-- JSTL for JSP -->
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
+			<!--<scope>provided</scope>-->
 		</dependency>
 
 		<!-- My SQL connector -->
@@ -93,6 +93,22 @@
 			<artifactId>bootstrap</artifactId>
 			<version>3.3.7</version>
 		</dependency>
+
+		<!-- QR Code Genertator JAR -->
+
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>core</artifactId>
+				<version>3.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>javase</artifactId>
+				<version>3.3.0</version>
+			</dependency>
+		<!-- QR Code Genertator JAR End -->
+
+
 	</dependencies>
 
 	<build>

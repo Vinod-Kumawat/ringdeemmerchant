@@ -1,28 +1,25 @@
 package com.merchant.merchant.api;
 
-import com.merchant.merchant.bean.Admin;
-import com.merchant.merchant.bean.Country;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.WriterException;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.bean.User;
+import com.merchant.merchant.bean.UserPointHistory;
 import com.merchant.merchant.dao.CountryRepository;
-import com.merchant.merchant.dto.MerchantPOJO;
-import com.merchant.merchant.dto.ProductPOJO;
-import com.merchant.merchant.service.AdminService;
-import com.merchant.merchant.service.MerchantService;
-import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.dao.ProductRepository;
+import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
-import com.merchant.merchant.util.MerchantToPOJOConverter;
+import com.merchant.merchant.util.QRCodeUtile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,94 +38,30 @@ public class AdminRestApi {
     ProductService productService;
 
     @Autowired
+    UserService userService;
+    @Autowired
+    UserPointHistoryService userPointHistoryService;
+
+    @Autowired
     CountryRepository countryRepository;
 
     @Autowired
     ServletContext servletContext;
 
-
-    HttpSession session=null;
-
-  /*  public boolean checkAdminSession(HttpServletRequest request)
+    @PostMapping(path="/loginApp")
+    public ResponseEntity getLogin(@RequestParam("username") String username,@RequestParam("password") String password)
     {
-        boolean flag=false;
-        session=request.getSession();
-        if(null!=session && null!=session.getAttribute("admin")){
-            Admin admin=(Admin) session.getAttribute("admin");
-            session.setAttribute("admin",admin);
-            System.out.println("in session");
-            flag=true;
+        Merchant merchant=null;
+         Merchant merchant1 = merchantService.getMerchantByEmail(username);
+        if (null!=merchant1 && merchant1.getPassword().equals(password)){
+            merchant=merchant1;
+            merchant.setImage("/merchantimage/"+merchant.getImage());
+            return ResponseEntity.status(200).body(merchant);
         }
-        System.out.println("Session check properly");
-        return flag;
-    }*/
-
-   /* @RequestMapping("/")
-    public String Test(Model model, HttpServletRequest request)
-    {
-        String url="login";
-        if(checkAdminSession(request)){
-            url="admin/home";
+        else{
+            return ResponseEntity.status(200).body(new String("UserName & password doesn't match"));
         }
-        else {
-            model.addAttribute("loginForm", new Admin());
-            System.out.println("Login");
-        }
-        return url;
-    }*/
-/*
-    @PostMapping("/login")
-    public String Login(@RequestBody Admin loginForm)
-    {
-       *//* session=request.getSession();
-        if(checkAdminSession(request)){
-            // do nothing
-        }else {*//*
-            if (adminService.loginAdmin(loginForm)) {
-                System.out.println("login Successfull");
-                session.setAttribute("admin", loginForm);
-
-            }
-            else {
-                return "login";
-            }
-       *//* }*//*
-        System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
-        return "admin/home";
-    }*/
-/*
-    @RequestMapping("/logout")
-    public String logout(HttpServletRequest request,Model model)
-    {
-        session=request.getSession();
-        if(null!=session && null!=session.getAttribute("admin"))
-        {
-            //   session.setAttribute("admin",null);
-            session.removeAttribute("admin");
-            session.invalidate();;
-
-        }
-        model.addAttribute("loginForm", new Admin());
-        return "login";
-    }*/
-
-    /*@RequestMapping("admin/home")
-    public String Test1()
-    {
-        System.out.println("Home");
-        return "admin/home";
     }
-
-    @RequestMapping("/addMerchant")
-    public String addMerchant(Model model,HttpServletRequest request)
-    {
-        if(!checkAdminSession(request)){
-            return logout(request,model);
-        }
-        model.addAttribute("merchantForm", new MerchantPOJO());
-        System.out.println("Add M");
-        return "admin/addmerchant";
-    }*/
 
     @PostMapping(path="/addMerchant")
     public String addAndSaveMerchant(@RequestBody Merchant merchant)
@@ -153,71 +86,84 @@ public class AdminRestApi {
         return msg;
     }
 
-    @PostMapping(path="/addMerchantWithFile")
-    public String addAndSaveMerchantWithFile(@RequestBody MerchantPOJO merchantPOJO)
-    {
-        /*String msg=merchantPOJO.getImage().getOriginalFilename();
-        System.out.println(merchantPOJO.getImage().getOriginalFilename());
-
-        try {
-            merchant=merchantService.addMerchant(merchant);
-
-            if(null==merchant.getMerchantId())
-            {
-                msg= "Merchant added with merchantID "+merchant.getMerchantId();
-            }
-            else {
-                msg= "Merchant Updated with merchantID "+merchant.getMerchantId();
-            }
-
-        }
-        catch (Exception ex)
-        {
-           msg="something wrong please try again";
-
-        }*/
-        return "";
-    }
-
-    @GetMapping(value="/viewMerchantByID/{id}")
-    public Merchant viewMerchantByID(@PathVariable Integer id )
+    @PostMapping(value="/viewMerchantByID")
+    public ResponseEntity viewMerchantByID(@RequestParam("id") Integer id )
     {
         //MerchantPOJO merchantPOJO=new MerchantPOJO();
         Merchant merchant=merchantService.viewMerchantByID(id);
         //merchantPOJO=MerchantToPOJOConverter.convertMerchantToPOJO(merchant,merchantPOJO);
-        return merchant;
+        if(null!=merchant) {
+            return ResponseEntity.status(200).body(merchant);
+        }
+        else{
+            return ResponseEntity.status(200).body(new String("No Record found"));
+        }
     }
 
     @GetMapping(value ="/viewMerchant")
-    public List<Merchant> viewMerchant()
+    public ResponseEntity viewMerchant()
     {
         List<Merchant> merchantList=merchantService.viewMerchant();
-        return merchantList;
+        if(null!=merchantList && merchantList.size()>0) {
+            return ResponseEntity.status(200).body(merchantList);
+        }
+        else{
+            return ResponseEntity.status(200).body(new String("No Record found"));
+        }
     }
 
     @GetMapping(value="/viewProduct")
-    public List<Product> viewProduct()
+    public ResponseEntity viewProduct()
     {
 
         List<Product> productList=productService.viewProduct();
         List<Product> productList1=new ArrayList<>();
-        for (Product p:productList) {
-            p.setImage(servletContext.getRealPath("/productimage")+"/"+ p.getImage());
+        if(null!=productList && productList.size()>0) {
+            for (Product p:productList) {
+            p.setImage( p.getImage());
             productList1.add(p);
+            }
+          return ResponseEntity.status(200).body(productList1);
         }
-        return productList1;
+        else{
+            return ResponseEntity.status(200).body(new String("No Record found"));
+        }
     }
 
-    @GetMapping(path="viewProductByMerchant/{id}")
-    public List<Product> viewProductByMerchant(@PathVariable Integer id)
+    @PostMapping(path="/viewProductByMerchant")
+    public ResponseEntity viewProductByMerchant(@RequestParam("id") Integer id)
     {
         List<Product> productList=productService.viewProductByMerchantID(id);
         List<Product> productList1=new ArrayList<>();
-        for (Product p:productList) {
-            p.setImage(servletContext.getRealPath("/productimage")+"/"+ p.getImage());
-            productList1.add(p);
+
+        if(null!=productList && productList.size()>0) {
+            for (Product p:productList) {
+                p.setImage(p.getImage());
+                productList1.add(p);
+            }
+            return ResponseEntity.status(200).body(productList1);
         }
-        return productList1;
+        else{
+            return ResponseEntity.status(200).body(new String("No Record found"));
+        }
+    }
+
+    /**
+     *
+     * @param id
+     * @return product entiry or not found msg
+     */
+    @PostMapping(value="/viewProductByID")
+    public ResponseEntity viewProductByID(@RequestParam("productId") Integer productId )
+    {
+
+        Product product=productService.viewProductByID(productId);
+        if(null!=product) {
+            return ResponseEntity.status(200).body(product);
+        }
+        else{
+            return ResponseEntity.status(200).body(new String("No Record found"));
+        }
     }
 
     @PostMapping(path="/addProduct")
@@ -235,6 +181,10 @@ public class AdminRestApi {
             }
            // product.setStatus("Active");
             product1=productService.addProduct(product);
+            //String QRdata=product1.getProductId()+":"+product1.getProductName()+":"+product1.getMechantID()+":"+product1.getProductPoint()+":"+product1.getDescription()+":"+product1.getOtherInfo()+":"+product1.getShowOnDay();
+            String QRdata=product1.toString();
+            String productQR=product1.getProductId()+product1.getProductName();
+            QrCodeProcess(QRdata,productQR);
             msg+=product1.getProductId();
 
         }
@@ -245,6 +195,14 @@ public class AdminRestApi {
         return msg;
     }
 
+
+
+    /**
+     *
+     * @param multipartFile
+     * @param id
+     * @return
+     */
     @PostMapping(path="/addProduct2")
     public String addAndSaveProduct1(@RequestParam("image") MultipartFile multipartFile,@RequestParam("id") Integer id) {
         String msg="";
@@ -257,7 +215,6 @@ public class AdminRestApi {
             Product product = productService.viewProductByID(id);
             product.setImage(filename);
             System.out.println(product.toString());
-            // update product
             Product product1=productService.addProduct(product);
             msg="Product image uploaded for :"+product.getProductId();
         }catch (Exception ex)
@@ -269,50 +226,114 @@ public class AdminRestApi {
 
     }
 
-
-/*
-    @RequestMapping("/viewTransaction")
-    public String viewTransaction(HttpServletRequest request,Model model)
+    @PostMapping(path="/addUser")
+    public String addAndSaveUser(@RequestBody User user)
     {
-        if(!checkAdminSession(request)){
-            return logout(request,model);
+        String msg="";
+        User user1=null;
+        try {
+            if(null==user.getId())
+            {
+                msg= "User added with userID: ";
+            }
+            else {
+                msg= "User Updated with userID: ";
+            }
+            // product.setStatus("Active");
+            user1=userService.saveUSer(user);
+
+            msg+=user.getUserId();
+
         }
-        System.out.println("view T");
-        return "admin/transactionDetail";
-    }
-
-    @RequestMapping("/viewTotalSell")
-    public String viewTotalSell(HttpServletRequest request, Model model)
-    {
-        if(!checkAdminSession(request)){
-            return logout(request,model);
-        }
-        System.out.println("view T S");
-        return "admin/totalSellDetail";
-    }
-
-    @RequestMapping("/viewPoint")
-    public String viewPoint(HttpServletRequest request, Model model)
-    {
-        if(!checkAdminSession(request)){
-            return logout(request,model);
-        }
-        System.out.println("view c point");
-        return "admin/comsumePointByMerchant";
-    }
-
-
-
-    @ModelAttribute("countryList")
-    public Map<String, String> getCountryList()
-    {
-        Map<String, String> countryList=new HashMap<>();
-        List<Country> countryList1=countryRepository.findAll();
-        for(Country country:countryList1)
+        catch (Exception ex)
         {
-            countryList.put(country.getName(),country.getName());
+            msg="something wrong please try again";
         }
-        return countryList;
+        return msg;
     }
-*/
+
+    @PostMapping(path="/captureProductByUser")
+    public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId)
+    {
+        String msg="";
+        try {
+            // get product
+          Product product=productService.viewProductByID(productId);
+          // get user
+          User user=userService.getUserByID(userid);
+          // check user and product available
+          if(null!=user && null!=product)
+          {
+              int productPoint=product.getProductPoint();
+              // chekc user avialable point is greater than product point
+              if(Integer.parseInt(user.getPoint())>productPoint){
+                  // calculate point
+                  int remainPoint=Integer.parseInt(user.getPoint())-productPoint;
+                  user.setPoint(String.valueOf(remainPoint));
+                  // updtae user point
+                  User user1=userService.saveUSer(user);
+                  // create history object
+                  UserPointHistory userPointHistory=new UserPointHistory();
+                  userPointHistory.setUserId(user1.getUserId());
+                  userPointHistory.setProductPoint(String.valueOf(productPoint));
+                  userPointHistory.setProductId(String.valueOf(product.getProductId()));
+                  // save history in storage
+                  UserPointHistory userPointHistory1=userPointHistoryService.saveUserPointHistory(userPointHistory);
+
+                  msg="Product Purchased successfully";
+              }
+              else
+              {
+                  msg="You don't have Sufficient Point balance";
+              }
+
+          }
+          else {
+              msg="something Wrong ! Might be product or User not found";
+          }
+        }
+        catch (Exception ex)
+        {
+            msg="something wrong please try again";
+        }
+        return msg;
+    }
+
+
+
+    /**
+     *
+     * @param data1
+     * @param productQR
+     * @throws WriterException
+     * @throws IOException
+     * @throws NotFoundException
+     */
+    public void QrCodeProcess(String data1,String productQR) throws WriterException, IOException, NotFoundException {
+        // The data that the QR code will contain
+        String data = data1;
+
+        // The path where the image will get saved
+        String bashpath = servletContext.getRealPath("/productqrcode/");
+        String path = bashpath+"/QR"+productQR+".png";
+
+        // Encoding charset
+        String charset = "UTF-8";
+
+        Map<EncodeHintType, ErrorCorrectionLevel> hashMap
+                = new HashMap<EncodeHintType,
+                                ErrorCorrectionLevel>();
+
+        hashMap.put(EncodeHintType.ERROR_CORRECTION,
+                ErrorCorrectionLevel.L);
+
+        // Create the QR code and save
+        // in the specified folder
+        // as a jpg file
+        QRCodeUtile.createQR(data, path, charset, hashMap, 200, 200);
+        System.out.println("QR Code Generated!!! ");
+    }
+
+
+
 }

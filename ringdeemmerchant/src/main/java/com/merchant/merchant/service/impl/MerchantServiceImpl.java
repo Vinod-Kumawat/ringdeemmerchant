@@ -41,7 +41,6 @@ public class MerchantServiceImpl implements MerchantService {
     public Merchant viewMerchantByID(int merchantId) {
         System.out.println(merchantId);
         Merchant merchant=merchantRepository.findByMerchantId(merchantId);
-        System.out.println(merchant.toString());
         return merchant;
     }
 
@@ -58,4 +57,11 @@ public class MerchantServiceImpl implements MerchantService {
         Merchant merchant=merchantRepository.findByMerchantMail(merchantMail);
         return merchant;
     }
+
+    public boolean isMerchantAlreadyRegisterByEmail(String email)
+    {
+        Merchant merchant=getMerchantByEmail(email);
+        return (null!=merchant && merchant.getMerchantMail().equals(email))?true:false;
+    }
+
 }

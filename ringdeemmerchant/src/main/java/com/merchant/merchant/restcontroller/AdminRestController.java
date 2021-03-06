@@ -130,6 +130,13 @@ public class AdminRestController {
         if(!checkAdminSession(request)){
             return logout(request,model);
         }
+
+        if(null==merchantForm.getMerchantId() && merchantService.isMerchantAlreadyRegisterByEmail(merchantForm.getMerchantMail())){
+            model.addAttribute("ErrMessage","Merchant Already register with Email: "+merchantForm.getMerchantMail());
+            model.addAttribute("merchantForm", merchantForm);
+            return "admin/addmerchant";
+        }
+
         Merchant merchant=new Merchant();
         String filename="";
         try {
@@ -165,7 +172,7 @@ public class AdminRestController {
         catch (Exception ex)
         {
             model.addAttribute("merchantForm", null!=merchant?merchant: new Merchant());
-            model.addAttribute("message","Merchant added with merchantID "+merchant.getMerchantId());
+            model.addAttribute("ErrMessage","Merchant added with merchantID "+ex.getMessage());
 
         }
                 return "admin/addmerchant";

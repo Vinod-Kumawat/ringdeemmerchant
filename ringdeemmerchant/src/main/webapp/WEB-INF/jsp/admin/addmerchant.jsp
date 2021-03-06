@@ -104,6 +104,12 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
+                        <c:if test="${not empty ErrMessage}">
+                            <div class="alert alert-danger">
+                              <strong>Error ! </strong> ${ErrMessage}.
+                            </div>
+                        </c:if>
+
                             <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Merchant</h4>
