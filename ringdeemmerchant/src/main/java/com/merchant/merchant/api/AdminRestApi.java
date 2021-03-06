@@ -48,6 +48,19 @@ public class AdminRestApi {
     @Autowired
     ServletContext servletContext;
 
+    public String generalMsg="{\"status\":\"200\",\"message\":\"";
+    public String endMsg="}";
+
+    public String prepareMsg(String msg)
+    {
+        return generalMsg+msg+"\""+endMsg;
+    }
+    public String prepareMsgWithID(String msg,Integer id)
+    {
+        return generalMsg+msg+"\",\"Id\":"+id+endMsg;
+    }
+
+
     @PostMapping(path="/loginApp")
     public ResponseEntity getLogin(@RequestParam("username") String username,@RequestParam("password") String password)
     {
@@ -59,7 +72,8 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(merchant);
         }
         else{
-            return ResponseEntity.status(200).body(new String("UserName & password doesn't match"));
+
+            return ResponseEntity.status(200).body(prepareMsg("UserName & password doesn't match"));
         }
     }
 
@@ -70,10 +84,10 @@ public class AdminRestApi {
         try {
             if(null==merchant.getMerchantId())
             {
-                msg= "Merchant added with merchantID ";
+                msg= "Merchant added with merchantID:";
             }
             else {
-                msg= "Merchant Updated with merchantID ";
+                msg= "Merchant Updated with merchantID:";
             }
             merchant=merchantService.addMerchant(merchant);
             msg+=merchant.getMerchantId();
@@ -83,7 +97,12 @@ public class AdminRestApi {
            msg="something wrong please try again";
 
         }
-        return msg;
+        if(msg.contains(":"))
+        {
+            String[] arr=msg.split(":");
+            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        }
+        return prepareMsg(msg);
     }
 
     @PostMapping(value="/viewMerchantByID")
@@ -96,7 +115,7 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(merchant);
         }
         else{
-            return ResponseEntity.status(200).body(new String("No Record found"));
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
@@ -108,7 +127,7 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(merchantList);
         }
         else{
-            return ResponseEntity.status(200).body(new String("No Record found"));
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
@@ -126,7 +145,7 @@ public class AdminRestApi {
           return ResponseEntity.status(200).body(productList1);
         }
         else{
-            return ResponseEntity.status(200).body(new String("No Record found"));
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
@@ -144,13 +163,13 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(productList1);
         }
         else{
-            return ResponseEntity.status(200).body(new String("No Record found"));
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
     /**
      *
-     * @param id
+     * @param productId
      * @return product entiry or not found msg
      */
     @PostMapping(value="/viewProductByID")
@@ -162,7 +181,7 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(product);
         }
         else{
-            return ResponseEntity.status(200).body(new String("No Record found"));
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
@@ -174,17 +193,17 @@ public class AdminRestApi {
         try {
             if(null==product.getProductId())
             {
-                msg= "Product added with productID: ";
+                msg= "Product added with productID:";
             }
             else {
-                msg= "Product Updated with productID: ";
+                msg= "Product Updated with productID:";
             }
            // product.setStatus("Active");
             product1=productService.addProduct(product);
             //String QRdata=product1.getProductId()+":"+product1.getProductName()+":"+product1.getMechantID()+":"+product1.getProductPoint()+":"+product1.getDescription()+":"+product1.getOtherInfo()+":"+product1.getShowOnDay();
-            String QRdata=product1.toString();
+           /* String QRdata=product1.toString();
             String productQR=product1.getProductId()+product1.getProductName();
-            QrCodeProcess(QRdata,productQR);
+            QrCodeProcess(QRdata,productQR);*/
             msg+=product1.getProductId();
 
         }
@@ -192,7 +211,13 @@ public class AdminRestApi {
         {
             msg="something wrong please try again";
         }
-        return msg;
+
+        if(msg.contains(":"))
+        {
+            String[] arr=msg.split(":");
+            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        }
+        return prepareMsg(msg);
     }
 
 
@@ -216,13 +241,19 @@ public class AdminRestApi {
             product.setImage(filename);
             System.out.println(product.toString());
             Product product1=productService.addProduct(product);
-            msg="Product image uploaded for :"+product.getProductId();
+            msg="Product image uploaded for:"+product.getProductId();
         }catch (Exception ex)
         {
             msg=ex.getMessage();
         }
 
-        return msg;
+        if(msg.contains(":"))
+        {
+            String[] arr=msg.split(":");
+            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        }
+
+        return prepareMsg(msg);
 
     }
 
@@ -231,25 +262,40 @@ public class AdminRestApi {
     {
         String msg="";
         User user1=null;
+
+        //check user already exist
+        String contactName=user.getContactName();
+        User user2=userService.getUserByContactName(contactName);
+        if(null!=user2)
+        {
+         user.setId(user2.getId());
+        }
+
         try {
+
             if(null==user.getId())
             {
-                msg= "User added with userID: ";
+                msg= "User added with userID:";
             }
             else {
-                msg= "User Updated with userID: ";
+                msg= "User Updated with userID:";
             }
             // product.setStatus("Active");
             user1=userService.saveUSer(user);
 
-            msg+=user.getUserId();
+            msg+=user.getId();
 
         }
         catch (Exception ex)
         {
             msg="something wrong please try again";
         }
-        return msg;
+        if(msg.contains(":"))
+        {
+            String[] arr=msg.split(":");
+            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        }
+        return prepareMsg(msg);
     }
 
     @PostMapping(path="/captureProductByUser")
@@ -296,7 +342,7 @@ public class AdminRestApi {
         {
             msg="something wrong please try again";
         }
-        return msg;
+        return prepareMsg(msg);
     }
 
 
