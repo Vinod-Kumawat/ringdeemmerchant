@@ -14,7 +14,12 @@ public class ProductToPOJOConverter {
         productPOJO.setDescription(product.getDescription());
         productPOJO.setOtherInfo(product.getOtherInfo());
         productPOJO.setMechantID(product.getMechantID());
-        productPOJO.setShowOnDay(product.getShowOnDay());
+        //productPOJO.setShowOnDay(product.getShowOnDay());
+        productPOJO.setCategory(product.getCategory());
+        productPOJO.setStartdate(product.getStartdate());
+        productPOJO.setEnddate(product.getEnddate());
+        productPOJO.setPrice(product.getPrice());
+        productPOJO.setDiscountprice(product.getDiscountprice());
         return productPOJO;
     }
 
@@ -22,13 +27,21 @@ public class ProductToPOJOConverter {
         if(null!=productForm.getProductId()){
             product.setProductId(productForm.getProductId());
         }
-        product.setImage(filename);
+        if(null!=filename && filename.length()>3) {
+            product.setImage(filename);
+        }
         product.setProductName(productForm.getProductName());
         product.setProductPoint(productForm.getProductPoint());
         product.setMechantID(productForm.getMechantID());
         product.setDescription(productForm.getDescription());
-        product.setShowOnDay(productForm.getShowOnDay());
+        //product.setShowOnDay(productForm.getShowOnDay());
         product.setOtherInfo(productForm.getOtherInfo());
+        product.setStatus(productForm.getStatus());
+        product.setCategory(productForm.getCategory());
+        product.setStartdate(productForm.getStartdate());
+        product.setEnddate(productForm.getEnddate());
+        product.setPrice(productForm.getPrice());
+        product.setDiscountprice(productForm.getDiscountprice());
         return product;
     }
 }

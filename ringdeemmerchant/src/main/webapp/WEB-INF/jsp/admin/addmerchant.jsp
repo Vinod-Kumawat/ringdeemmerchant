@@ -244,10 +244,21 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="point" class="col-sm-3 text-left control-label col-form-label">Point</label>
+                                            <label for="currency" class="col-sm-3 text-left control-label col-form-label">Currency</label>
+                                            <div class="col-sm-9">
+                                            <spring:bind path="currency">
+                                               <form:input type="text" path="currency" class="form-control" id="currency" placeholder="USD"></form:input>
+                                            </spring:bind>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class=row>
+                                        <div class="form-group col-sm-6">
+                                            <label for="point" class="col-sm-3 text-left control-label col-form-label">Amount/Payment</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="point">
-                                               <form:input type="text" path="point" class="form-control" id="point" placeholder="point"></form:input>
+                                               <form:input type="text" path="point" class="form-control" id="point" placeholder="300"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>

@@ -8,5 +8,6 @@ public interface UserPointHistoryService {
     public List<UserPointHistory> findAll();
     public UserPointHistory saveUserPointHistory(UserPointHistory userPointHistory);
     public UserPointHistory findByUserId(String userId);
-    public UserPointHistory findByProductId(String productID);
+    public List<UserPointHistory> findByProductId(String productID);
+    public List<UserPointHistory> findByMerchantID(Integer merchantId);
 }

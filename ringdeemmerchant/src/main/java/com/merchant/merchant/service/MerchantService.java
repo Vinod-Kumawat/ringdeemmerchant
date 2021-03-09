@@ -13,4 +13,5 @@ public interface MerchantService {
     public List<Merchant> viewMerchantByCountry(String country);
     public Merchant getMerchantByEmail(String merchantMail);
     public boolean isMerchantAlreadyRegisterByEmail(String email);
+    public List<Merchant> findMerchantByLowPoint();
 }

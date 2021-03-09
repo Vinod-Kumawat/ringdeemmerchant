@@ -2,6 +2,9 @@ package com.merchant.merchant.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.sql.Date;
+
 public class ProductPOJO {
 
     private Integer productId;
@@ -14,6 +17,12 @@ public class ProductPOJO {
     private  String description;
     private String otherInfo;
     private String status;
+    private String category;
+    private Date startdate;
+    private Date enddate;
+    private Integer price;
+    private Integer discountprice;
+
 
 
     public Integer getProductId() {
@@ -88,18 +97,63 @@ public class ProductPOJO {
         this.status = status;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Date getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
+    }
+
+    public Date getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getDiscountprice() {
+        return discountprice;
+    }
+
+    public void setDiscountprice(Integer discountprice) {
+        this.discountprice = discountprice;
+    }
+
     @Override
     public String toString() {
-        return "Product{" +
+        return "ProductPOJO{" +
                 "productId=" + productId +
                 ", mechantID=" + mechantID +
                 ", productName='" + productName + '\'' +
                 ", productPoint=" + productPoint +
-                ", image='" + image + '\'' +
+                ", image=" + image +
                 ", showOnDay='" + showOnDay + '\'' +
                 ", description='" + description + '\'' +
                 ", otherInfo='" + otherInfo + '\'' +
                 ", status='" + status + '\'' +
+                ", category='" + category + '\'' +
+                ", startdate=" + startdate +
+                ", enddate=" + enddate +
+                ", price=" + price +
+                ", discountprice=" + discountprice +
                 '}';
     }
 }

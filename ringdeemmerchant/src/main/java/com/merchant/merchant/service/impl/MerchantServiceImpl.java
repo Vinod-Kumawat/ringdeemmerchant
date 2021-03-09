@@ -6,6 +6,7 @@ import com.merchant.merchant.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -62,6 +63,11 @@ public class MerchantServiceImpl implements MerchantService {
     {
         Merchant merchant=getMerchantByEmail(email);
         return (null!=merchant && merchant.getMerchantMail().equals(email))?true:false;
+    }
+
+    @Override
+    public List<Merchant> findMerchantByLowPoint() {
+        return merchantRepository.findMerchantByLowPoint();
     }
 
 }

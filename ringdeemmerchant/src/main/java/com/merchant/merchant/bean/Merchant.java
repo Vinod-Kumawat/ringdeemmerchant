@@ -1,12 +1,17 @@
 package com.merchant.merchant.bean;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name="merchant")
+@DynamicUpdate
 public class Merchant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer merchantId;
     @Column
     private String companyName;
@@ -34,8 +39,13 @@ public class Merchant {
     private String vatTax;
     @Column
     private String country;
+    // point will consider amount/payment
     @Column
     private long point;
+    @Column
+    private String currency;
+    @Column
+    private Date createddate;
 
 
 
@@ -158,6 +168,22 @@ public class Merchant {
         this.image = image;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Date getCreateddate() {
+        return createddate;
+    }
+
+    public void setCreateddate(Date createddate) {
+        this.createddate = createddate;
+    }
+
     @Override
     public String toString() {
         return "Merchant{" +
@@ -169,12 +195,15 @@ public class Merchant {
                 ", countryCode='" + countryCode + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
                 ", businessAddress='" + businessAddress + '\'' +
                 ", businessNumber='" + businessNumber + '\'' +
                 ", taxNumber='" + taxNumber + '\'' +
                 ", vatTax='" + vatTax + '\'' +
                 ", country='" + country + '\'' +
                 ", point=" + point +
+                ", currency='" + currency + '\'' +
+                ", createddate='" + createddate + '\'' +
                 '}';
     }
 }

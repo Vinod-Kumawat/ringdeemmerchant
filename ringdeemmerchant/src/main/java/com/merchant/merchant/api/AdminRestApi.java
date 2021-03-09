@@ -1,6 +1,6 @@
 package com.merchant.merchant.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
@@ -10,7 +10,7 @@ import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.bean.User;
 import com.merchant.merchant.bean.UserPointHistory;
 import com.merchant.merchant.dao.CountryRepository;
-import com.merchant.merchant.dao.ProductRepository;
+import com.merchant.merchant.dao.MerchantRepository;
 import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.QRCodeUtile;
@@ -18,16 +18,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1")
 public class AdminRestApi {
+
+    public static final String LIVE="Live";
+    public static final String DRAFT="Draft";
     @Autowired
     AdminService adminService;
 
@@ -43,7 +51,7 @@ public class AdminRestApi {
     UserPointHistoryService userPointHistoryService;
 
     @Autowired
-    CountryRepository countryRepository;
+    MerchantRepository merchantRepository;
 
     @Autowired
     ServletContext servletContext;
@@ -199,6 +207,11 @@ public class AdminRestApi {
                 msg= "Product Updated with productID:";
             }
            // product.setStatus("Active");
+            if(null!=product.getProductId())
+            {
+                String filename=productService.viewProductByID(product.getProductId()).getImage();
+                product.setImage(filename);
+            }
             product1=productService.addProduct(product);
             //String QRdata=product1.getProductId()+":"+product1.getProductName()+":"+product1.getMechantID()+":"+product1.getProductPoint()+":"+product1.getDescription()+":"+product1.getOtherInfo()+":"+product1.getShowOnDay();
            /* String QRdata=product1.toString();
@@ -264,8 +277,8 @@ public class AdminRestApi {
         User user1=null;
 
         //check user already exist
-        String contactName=user.getContactName();
-        User user2=userService.getUserByContactName(contactName);
+        String userID=user.getUserId();
+        User user2=userService.getUserByID(userID);
         if(null!=user2)
         {
          user.setId(user2.getId());
@@ -318,11 +331,19 @@ public class AdminRestApi {
                   user.setPoint(String.valueOf(remainPoint));
                   // updtae user point
                   User user1=userService.saveUSer(user);
+
+                  // update mewrchant point as well
+                  long point=merchantRepository.findMerchantPoint(product.getMechantID());
+                  point=point-productPoint;
+                  merchantRepository.updateMerchantPoint(point,product.getMechantID());
+
                   // create history object
                   UserPointHistory userPointHistory=new UserPointHistory();
                   userPointHistory.setUserId(user1.getUserId());
                   userPointHistory.setProductPoint(String.valueOf(productPoint));
                   userPointHistory.setProductId(String.valueOf(product.getProductId()));
+                  userPointHistory.setDatetime(new Timestamp(System.currentTimeMillis()));
+                  userPointHistory.setMechantID(product.getMechantID());
                   // save history in storage
                   UserPointHistory userPointHistory1=userPointHistoryService.saveUserPointHistory(userPointHistory);
 
@@ -340,7 +361,8 @@ public class AdminRestApi {
         }
         catch (Exception ex)
         {
-            msg="something wrong please try again";
+            System.err.println(ex);
+            msg="something wrong please try again"+ex.getMessage();
         }
         return prepareMsg(msg);
     }
@@ -378,6 +400,46 @@ public class AdminRestApi {
         // as a jpg file
         QRCodeUtile.createQR(data, path, charset, hashMap, 200, 200);
         System.out.println("QR Code Generated!!! ");
+    }
+
+
+    @PostMapping(path="/viewLiveProductByMerchant")
+    public ResponseEntity viewLiveProductByMerchant(@RequestParam("id") Integer id)
+    {
+        List<Product> productList=productService.viewProductByMerchantID(id);
+        List<Product> productList1=new ArrayList<>();
+        productList = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(LIVE))).collect(Collectors.toList());
+
+        if(null!=productList && productList.size()>0) {
+            for (Product p:productList) {
+                p.setImage(p.getImage());
+                productList1.add(p);
+            }
+            return ResponseEntity.status(200).body(productList1);
+        }
+        else{
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
+
+    @PostMapping(path="/viewDraftProductByMerchant")
+    public ResponseEntity viewDraftProductByMerchant(@RequestParam("id") Integer id)
+    {
+        List<Product> productList=productService.viewProductByMerchantID(id);
+        List<Product> productList1=new ArrayList<>();
+        productList = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(DRAFT))).collect(Collectors.toList());
+
+        if(null!=productList && productList.size()>0) {
+            for (Product p:productList) {
+                p.setImage(p.getImage());
+                productList1.add(p);
+            }
+
+            return ResponseEntity.status(200).body(productList1);
+        }
+        else{
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
     }
 
 

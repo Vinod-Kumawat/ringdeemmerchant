@@ -1,14 +1,18 @@
 package com.merchant.merchant.bean;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.Map;
 
 @Entity
 @Table(name="product")
+@DynamicUpdate
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
 
     @Column
@@ -27,6 +31,16 @@ public class Product {
     private String otherInfo;
     @Column
     private String status;
+    @Column
+    private String category;
+    @Column
+    private Date startdate;
+    @Column
+    private Date enddate;
+    @Column
+    private Integer price;
+    @Column
+    private Integer discountprice;
 
 
     public Integer getProductId() {
@@ -101,6 +115,46 @@ public class Product {
         this.status = status;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Date getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
+    }
+
+    public Date getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getDiscountprice() {
+        return discountprice;
+    }
+
+    public void setDiscountprice(Integer discountprice) {
+        this.discountprice = discountprice;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -113,6 +167,11 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", otherInfo='" + otherInfo + '\'' +
                 ", status='" + status + '\'' +
+                ", category='" + category + '\'' +
+                ", startdate=" + startdate +
+                ", enddate=" + enddate +
+                ", price=" + price +
+                ", discountprice=" + discountprice +
                 '}';
     }
 }

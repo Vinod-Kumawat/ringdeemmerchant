@@ -48,6 +48,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> viewProductByStatus(String status) {
+        List<Product> productList=productRepository.findByStatus(status);
+        return productList;
+    }
+
+    @Override
     public void deleteProductByID(Integer id) {
         Product product=productRepository.findByProductId(id);
         System.out.println(product.toString());

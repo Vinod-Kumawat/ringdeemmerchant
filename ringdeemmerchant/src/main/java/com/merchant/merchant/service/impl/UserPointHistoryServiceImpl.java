@@ -31,7 +31,12 @@ public class UserPointHistoryServiceImpl implements UserPointHistoryService {
     }
 
     @Override
-    public UserPointHistory findByProductId(String productID) {
+    public List<UserPointHistory> findByProductId(String productID) {
         return userPointHistoryRepository.findByProductId(productID);
+    }
+
+    @Override
+    public List<UserPointHistory> findByMerchantID(Integer merchantId) {
+        return userPointHistoryRepository.findByMechantID(merchantId);
     }
 }

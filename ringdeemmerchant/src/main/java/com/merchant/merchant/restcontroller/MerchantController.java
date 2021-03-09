@@ -3,10 +3,12 @@ package com.merchant.merchant.restcontroller;
 import com.merchant.merchant.bean.Admin;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.bean.UserPointHistory;
 import com.merchant.merchant.dto.MerchantPOJO;
 import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.service.UserPointHistoryService;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.MerchantToPOJOConverter;
 import com.merchant.merchant.util.ProductToPOJOConverter;
@@ -20,16 +22,25 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MerchantController {
+
+    public static final String LIVE="Live";
+    public static final String DRAFT="Draft";
+
 
     @Autowired
     MerchantService merchantService;
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    UserPointHistoryService userPointHistoryService;
 
     HttpSession session;
 
@@ -47,6 +58,24 @@ public class MerchantController {
         return flag;
     }
 
+    public Model dashboardViewModel(Model model)
+    {
+        Merchant merchant=(Merchant) session.getAttribute("merchant");
+        merchant=merchantService.viewMerchantByID(merchant.getMerchantId());
+        session.setAttribute("merchant", merchant);
+        List<Product> productList=productService.viewProductByMerchantID(merchant.getMerchantId());
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findByMerchantID(merchant.getMerchantId());
+        int totalProduct=productList.size();
+        long totalLiveProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Live"))).count();
+        long totalDraftProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Draft"))).count();
+        long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
+        model.addAttribute("totalProduct",totalProduct);
+        model.addAttribute("totalDraftProduct",totalDraftProduct);
+        model.addAttribute("totalLiveProduct",totalLiveProduct);
+        model.addAttribute("totalSellPoint",totalSellPoint);
+        return model;
+    }
+
     @RequestMapping("/merchant/logout")
     public String logout(HttpServletRequest request,Model model)
     {
@@ -55,23 +84,27 @@ public class MerchantController {
         {
             //   session.setAttribute("admin",null);
             session.removeAttribute("merchant");
-            session.invalidate();;
-
+            session.invalidate();
         }
         model.addAttribute("merchantLoginForm", new Merchant());
         return "merchant/login";
     }
 
     @RequestMapping("/merchant/")
-    public String Test(Model model)
+    public String Test(Model model,HttpServletRequest request)
     {
+        if(checkMerchantSession(request))
+        {
+            model=dashboardViewModel(model);
+            return "merchant/home";
+        }
         model.addAttribute("merchantLoginForm", new Merchant());
         System.out.println("Login");
         return "merchant/login";
     }
 
     @PostMapping("merchant/login")
-    public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm, HttpServletRequest request) {
+    public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm,Model model, HttpServletRequest request) {
         session = request.getSession();
         if (checkMerchantSession(request)) {
             // do nothing
@@ -81,8 +114,10 @@ public class MerchantController {
                 //if(null==request.getSession()){
                 session = request.getSession();
                 session.setAttribute("merchant", merchant);
+
                 //}
                 System.out.println("login Successfull");
+                model=dashboardViewModel(model);
             }
             // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
 
@@ -136,6 +171,41 @@ public class MerchantController {
         return "merchant/productDetail";
     }
 
+    @RequestMapping("merchant/viewProductLive")
+    public String viewProductLive(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        Integer mid=getMerchantIDBySession(request);
+        if(mid>0) {
+            List<Product> productList = productService.viewProductByMerchantID(mid);
+                List<Product> productList1 = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(LIVE))).collect(Collectors.toList());
+                model.addAttribute("productList", productList1);
+
+        }
+        System.out.println("view P");
+        return "merchant/productDetailLive";
+    }
+
+    @RequestMapping("merchant/viewProductDraft")
+    public String viewProductDraft(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        Integer mid=getMerchantIDBySession(request);
+        if(mid>0) {
+            List<Product> productList = productService.viewProductByMerchantID(mid);
+            List<Product> productList1 = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(DRAFT))).collect(Collectors.toList());
+            model.addAttribute("productList", productList1);
+
+        }
+        System.out.println("view P");
+        return "merchant/productDetailDraft";
+    }
+
+
     @RequestMapping("merchant/addProduct")
     public String addProduct(Model model,HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -169,23 +239,31 @@ public class MerchantController {
                     System.out.println(ex.getMessage());
                 }
         }
+        else{
+            if(null!=productForm.getProductId())
+            {
+                filename=productService.viewProductByID(productForm.getProductId()).getImage();
+            }
+        }
+
 
         try {
             product=ProductToPOJOConverter.convertPojoToProduct(productForm,product,filename);
             product=productService.addProduct(product);
-            if(null==product.getProductId())
+            if(null==productForm.getProductId())
             {
                 model.addAttribute("message","Product added with ProductID "+product.getProductId());
             }
             else {
+
                 model.addAttribute("message","Product Updated with productID "+product.getProductId());
             }
-            model.addAttribute("productForm", new Product());
+            model.addAttribute("productForm", new ProductPOJO());
         }
         catch (Exception ex)
         {
-            model.addAttribute("productForm", null!=product?product: new Product());
-            model.addAttribute("message","Failed to add Product"+product.getProductId());
+            model.addAttribute("productForm", null!=productForm?productForm: new ProductPOJO());
+            model.addAttribute("message","Failed to add/update Product"+product.getProductId());
 
         }
         return "merchant/addProduct";

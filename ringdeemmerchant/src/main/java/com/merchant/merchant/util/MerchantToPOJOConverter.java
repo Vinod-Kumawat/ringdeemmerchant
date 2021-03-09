@@ -3,6 +3,8 @@ package com.merchant.merchant.util;
 import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.dto.MerchantPOJO;
 
+import java.sql.Date;
+
 public class MerchantToPOJOConverter {
 
     public static MerchantPOJO convertMerchantToPOJO(Merchant merchant,MerchantPOJO merchantPOJO)
@@ -21,12 +23,19 @@ public class MerchantToPOJOConverter {
         merchantPOJO.setTaxNumber(merchant.getTaxNumber());
         merchantPOJO.setPoint(merchant.getPoint());
         merchantPOJO.setPassword(merchant.getPassword());
+        merchantPOJO.setCurrency(merchant.getCurrency());
+        merchantPOJO.setCreatedate(merchant.getCreateddate());
         return merchantPOJO;
     }
 
     public static Merchant convertPojoToMerchant(MerchantPOJO merchantForm, Merchant merchant, String filename){
         if(null!=merchantForm.getMerchantId()){
             merchant.setMerchantId(merchantForm.getMerchantId());
+            merchant.setCreateddate(merchantForm.getCreatedate());
+        }
+        else
+        {
+            merchant.setCreateddate(new Date(System.currentTimeMillis()));
         }
         merchant.setCompanyName(merchantForm.getCompanyName());
         merchant.setMerchantMail(merchantForm.getMerchantMail());
@@ -42,6 +51,7 @@ public class MerchantToPOJOConverter {
         merchant.setPoint(merchantForm.getPoint());
         merchant.setTaxNumber(merchantForm.getTaxNumber());
         merchant.setVatTax(merchantForm.getVatTax());
+        merchant.setCurrency(merchantForm.getCurrency());
         return merchant;
     }
 }

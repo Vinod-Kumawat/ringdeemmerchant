@@ -14,7 +14,7 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav" class="p-t-30">
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
 
                         <!-- view Merchant -->
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/editMerchant/<%=merchant.getMerchantId() %>" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu"> View my Profile</span></a></li>
@@ -23,9 +23,10 @@
                          <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu">Product </span></a>
                              <ul aria-expanded="false" class="collapse  first-level">
                                    <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/addProduct" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> Add New Product </span></a></li>
-                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/viewProduct" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Product </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/viewProduct" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View All Product </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/viewProductLive" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Live Product </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/viewProductDraft" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Draft Product </span></a></li>
 
-                                   <li class="sidebar-item"><a href="/viewProduct" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Product</span></a></li>
                                  <!--
                                    <li class="sidebar-item"><a href="/viewTransaction" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Transaction</span></a></li>
 

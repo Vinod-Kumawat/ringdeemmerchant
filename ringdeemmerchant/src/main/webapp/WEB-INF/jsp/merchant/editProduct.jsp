@@ -124,7 +124,7 @@
                                             <label for="company" class="col-sm-3 text-left control-label col-form-label">Merchant ID</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="mechantID">
-                                                <form:input type="text" path="mechantID" value="<%=merchant.getMerchantId() %>" class="form-control" id="mechantID" placeholder="mechant ID" ></form:input>
+                                                <form:input type="text" path="mechantID" value="<%=merchant.getMerchantId() %>" class="form-control" id="mechantID" placeholder="mechant ID" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -143,19 +143,48 @@
                                             <label for="productPoint" class="col-sm-3 text-left control-label col-form-label">Product Point</label>
                                             <div class="col-sm-9">
                                             <spring:bind path="productPoint">
-                                                <form:input  type="text" path="productPoint" class="form-control" id="productPoint" placeholder="Product Point"></form:input>
+                                                <form:input  type="text" path="productPoint" class="form-control" id="productPoint" placeholder="Product Point" readonly="true"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="showOnDay" class="col-sm-3 text-left control-label col-form-label">Show On Day</label>
+                                            <label for="category" class="col-sm-3 text-left control-label col-form-label">Category</label>
                                             <div class="col-sm-9">
-                                            <spring:bind path="showOnDay">
-                                               <form:input type="text" path="showOnDay" class="form-control" id="showOnDay" placeholder="Show On Day"></form:input>
-                                            </spring:bind>
+                                                <spring:bind path="category">
+                                                    <form:select path="category" class="form-control" id="country">
+                                                        <form:option value="Popular"  label="Popular" />
+                                                        <form:option value="Meals(Veg)"  label="Meals(Veg)" />
+                                                        <form:option value="Meals(Non-Veg)"  label="Meals(Non-Veg)" />
+                                                        <form:option value="Combos"  label="Combos" />
+                                                        <form:option value="Desserts"  label="Desserts" />
+                                                        <form:option value="New"  label="New" />
+                                                    </form:select>
+                                                </spring:bind>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <label for="price" class="col-sm-3 text-left control-label col-form-label">Price </label>
+                                            <div class="col-sm-9">
+                                            <spring:bind path="price">
+                                                <form:input  type="text" path="price" class="form-control" id="productPoint" placeholder="Product Price" ></form:input>
+                                            </spring:bind>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-6">
+                                            <label for="discountprice" class="col-sm-3 text-left control-label col-form-label">Discount Price</label>
+                                            <div class="col-sm-9">
+                                            <spring:bind path="discountprice">
+                                                <form:input  type="text" path="discountprice" class="form-control" id="discountprice" placeholder="Product discount price" ></form:input>
+                                            </spring:bind>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
 
                                     <div class="row">
                                         <div class="form-group col-sm-6">
@@ -186,7 +215,49 @@
                                             </spring:bind>
                                             </div>
                                         </div>
+                                        <div class="form-group col-sm-6">
+                                            <label for="otherInfo" class="col-sm-3 text-left control-label col-form-label">Status</label>
+                                            <div class="col-sm-9">
+                                            <spring:bind path="status">
+                                                <!--
+                                                <form:select path="status" class="form-control" id="country">
+                                                    <form:option value="Live"  label="Live" />
+                                                    <form:option value="Draft"  label="Draft" />
+                                                </form:select>
+                                                -->
+
+                                              <form:input type="text" path="status" class="form-control" id="otherInfo" placeholder="Other Info" readonly="true"></form:input>
+
+                                            </spring:bind>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div class="row">
+                                       <div class="form-group col-sm-6">
+                                        <label>Start Date</label>
+                                        <div class="input-group">
+                                            <spring:bind path="startdate">
+                                                <form:input type="text" path="startdate" class="form-control startdate" placeholder="YYY-mm-dd"></form:input>
+                                            </spring:bind>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                       </div>
+                                        <div class="form-group col-sm-6">
+                                        <label>End Date</label>
+                                        <div class="input-group">
+                                            <spring:bind path="enddate">
+                                                <form:input type="text" path="enddate" class="form-control enddate" placeholder="YYY-mm-dd"></form:input>
+                                            </spring:bind>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
 
                                 </div>
                                 <div class="border-top">
@@ -295,7 +366,13 @@
 
         });
         /*datwpicker*/
-        jQuery('.mydatepicker').datepicker();
+        /*datwpicker*/
+        jQuery('.startdate').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+        jQuery('.enddate').datepicker({
+        format: 'yyyy-mm-dd'
+        });
         jQuery('#datepicker-autoclose').datepicker({
             autoclose: true,
             todayHighlight: true

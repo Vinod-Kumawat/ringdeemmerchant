@@ -3,6 +3,8 @@ package com.merchant.merchant.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+
 public class MerchantPOJO {
     private Integer merchantId;
     private String companyName;
@@ -19,6 +21,8 @@ public class MerchantPOJO {
     private String vatTax;
     private String country;
     private long point;
+    private String currency;
+    private Date createdate;
 
     public Integer getMerchantId() {
         return merchantId;
@@ -139,9 +143,25 @@ public class MerchantPOJO {
         this.image = image;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Date getCreatedate() {
+        return createdate;
+    }
+
+    public void setCreatedate(Date createdate) {
+        this.createdate = createdate;
+    }
+
     @Override
     public String toString() {
-        return "Merchant{" +
+        return "MerchantPOJO{" +
                 "merchantId=" + merchantId +
                 ", companyName='" + companyName + '\'' +
                 ", merchantMail='" + merchantMail + '\'' +
@@ -150,12 +170,15 @@ public class MerchantPOJO {
                 ", countryCode='" + countryCode + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", description='" + description + '\'' +
+                ", image=" + image +
                 ", businessAddress='" + businessAddress + '\'' +
                 ", businessNumber='" + businessNumber + '\'' +
                 ", taxNumber='" + taxNumber + '\'' +
                 ", vatTax='" + vatTax + '\'' +
                 ", country='" + country + '\'' +
                 ", point=" + point +
+                ", currency='" + currency + '\'' +
+                ", createdate='" + createdate + '\'' +
                 '}';
     }
 }

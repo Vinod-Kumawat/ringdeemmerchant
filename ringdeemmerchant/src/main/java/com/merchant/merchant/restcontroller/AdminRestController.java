@@ -272,6 +272,13 @@ public class AdminRestController {
         return "admin/productDetail";
     }
 
+    @ModelAttribute("merchantList2")
+    public List<Merchant> getMerchantLowPoint()
+    {
+        return merchantService.findMerchantByLowPoint();
+    }
+
+
     @ModelAttribute("countryList")
     public Map<String, String> getCountryList()
     {
