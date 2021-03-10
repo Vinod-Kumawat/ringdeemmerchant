@@ -33,4 +33,19 @@ public class MerchantQueryServiceImpl implements MerchantQueryService {
     public MerchantQuery saveQuery(MerchantQuery merchantQuery) {
         return merchantQueryRepository.save(merchantQuery);
     }
+
+    @Override
+    public long totalCountQuery() {
+        return merchantQueryRepository.countTotalQuery();
+    }
+
+    @Override
+    public List<MerchantQuery> findByStatus(String status) {
+        return merchantQueryRepository.findByStatus(status);
+    }
+
+    @Override
+    public void changeStatus(Integer merchantQueryId) {
+        merchantQueryRepository.changeStatus(merchantQueryId);
+    }
 }

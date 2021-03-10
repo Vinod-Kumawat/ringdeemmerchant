@@ -1,15 +1,10 @@
 package com.merchant.merchant.restcontroller;
 
-import com.merchant.merchant.bean.Admin;
-import com.merchant.merchant.bean.Country;
-import com.merchant.merchant.bean.Merchant;
-import com.merchant.merchant.bean.Product;
+import com.merchant.merchant.bean.*;
 import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.dto.MerchantPOJO;
 import com.merchant.merchant.dto.ProductPOJO;
-import com.merchant.merchant.service.AdminService;
-import com.merchant.merchant.service.MerchantService;
-import com.merchant.merchant.service.ProductService;
+import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.MerchantToPOJOConverter;
 import com.merchant.merchant.util.ProductToPOJOConverter;
@@ -31,6 +26,12 @@ import java.util.Map;
 @Controller
 public class AdminRestController {
 
+    public static final String LIVE="Live";
+    public static final String DRAFT="Draft";
+    public static final String QUERY_STATUS_P="pending";
+    public static final String QUERY_STATUS_R="resolved";
+
+
     @Autowired
     AdminService adminService;
 
@@ -39,6 +40,12 @@ public class AdminRestController {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    MerchantWalletAddService merchantWalletAddService;
+
+    @Autowired
+    MerchantQueryService merchantQueryService;
 
     @Autowired
     CountryRepository countryRepository;
@@ -230,6 +237,91 @@ public class AdminRestController {
 
         System.out.println("view P");
         return "admin/productDetail";
+    }
+
+    @RequestMapping("/viewLiveProduct")
+    public String viewLiveProduct(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<Product> productList=productService.viewProductByStatus(LIVE);
+        model.addAttribute("productList",productList);
+
+        System.out.println("view P");
+        return "admin/productDetailLive";
+    }
+
+    @RequestMapping("/viewDraftProduct")
+    public String viewDraftProduct(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<Product> productList=productService.viewProductByStatus(DRAFT);
+        model.addAttribute("productList",productList);
+
+        System.out.println("view P");
+        return "admin/productDetailDraft";
+    }
+
+    /*======== Wallet ======================*/
+    @RequestMapping("/viewAllWalletTopup")
+    public String viewAllWalletTopup(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.getAllWallet();
+        model.addAttribute("merchantWalletAddList",merchantWalletAddList);
+
+        System.out.println("view P");
+        return "admin/walletTopup";
+    }
+
+    /*======== inbox Query ======================*/
+    @RequestMapping("/viewInboxQuery")
+    public String viewInboxQuery(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<MerchantQuery> merchantQueryList=merchantQueryService.findByStatus(QUERY_STATUS_P);
+        model.addAttribute("queryList",merchantQueryList);
+
+        System.out.println("view P");
+        return "admin/inboxQuery";
+    }
+
+
+    @RequestMapping(value="resolvedQuery/{id})")
+    public String resolvedQuery(@PathVariable Integer id, Model model, HttpServletRequest request){
+        if(null==id)
+        {
+            return viewInboxQuery(model,request);
+        }
+
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+
+            merchantQueryService.changeStatus(id);
+         return viewInboxQuery(model,request);
+    }
+
+
+    /*======== Resolved Query ======================*/
+    @RequestMapping("/viewResolvedQuery")
+    public String viewResolvedQuery(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<MerchantQuery> merchantQueryList=merchantQueryService.findByStatus(QUERY_STATUS_R);
+        model.addAttribute("queryList",merchantQueryList);
+
+        System.out.println("view P");
+        return "admin/resolveQuery";
     }
 
     @RequestMapping("/viewTransaction")

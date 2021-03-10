@@ -19,11 +19,28 @@
                              </ul>
                          </li>
 
+                         <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">Product </span></a>
+                             <ul aria-expanded="false" class="collapse  first-level">
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewDraftProduct" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Draft Product </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewLiveProduct" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Live Product </span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewProduct" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> View All Product </span></a></li>
+                                   <!--
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewProduct" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Product</span></a></li>
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/viewTransaction" class="sidebar-link"><i class="mdi mdi-store"></i><span class="hide-menu"> View Merchant's Transaction</span></a></li>
+
+                                   <li class="sidebar-item"><a href="<%=request.getContextPath()%>/form-wizard.html" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Form Wizard </span></a></li>
+                                   -->
+                             </ul>
+                         </li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewAllWalletTopup" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Wallet Topup By Merchant</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewInboxQuery" aria-expanded="false"><i class="mdi mdi-inbox"></i><span class="hide-menu"> Inbox Query</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewResolvedQuery" aria-expanded="false"><i class="mdi mdi-message-bulleted-off"></i><span class="hide-menu"> Resolved Query</span></a></li>
+<!--
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewProduct" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Merchant's Product</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewTransaction" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu"> Merchant's Transaction</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewTotalSell" aria-expanded="false"><i class="mdi mdi-transfer"></i><span class="hide-menu"> Merchant's Total sell</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/viewPoint" aria-expanded="false"><i class="mdi mdi-coin"></i><span class="hide-menu"> Consume Point By Merchant </span></a></li>
-
+-->
 <!--
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="charts.html" aria-expanded="false"><i class="mdi mdi-chart-bar"></i><span class="hide-menu">Charts</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="widgets.html" aria-expanded="false"><i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Widgets</span></a></li>

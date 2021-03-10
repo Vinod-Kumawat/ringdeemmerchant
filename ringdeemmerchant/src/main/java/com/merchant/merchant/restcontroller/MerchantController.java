@@ -360,10 +360,12 @@ public class MerchantController {
             if (null != merchantWalletAdd.getWalletID() && merchantWalletAdd.getWalletID() > 0) {
                 model.addAttribute("message", "Your wallet balance " + merchantWalletAdd.getAmount() + " posted with wallet ref no: " + merchantWalletAdd.getWalletID());
             }
-           /* Integer merchantId = merchantWalletAdd.getMerchantId();
+           /*
+            Integer merchantId = merchantWalletAdd.getMerchantId();
             long point = merchantService.getMerchantPoint(merchantId);
             point = point + merchantWalletAdd.getAmount();
-            merchantService.updateMerchantPoint(point, merchantId);*/
+            merchantService.updateMerchantPoint(point, merchantId);
+            */
             MerchantWalletAddPOJO merchantWalletAddPOJO1 = new MerchantWalletAddPOJO();
             model.addAttribute("wallet", merchantWalletAddPOJO);
             System.out.println("Add w");
