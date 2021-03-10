@@ -1,17 +1,14 @@
 package com.merchant.merchant.restcontroller;
 
-import com.merchant.merchant.bean.Admin;
-import com.merchant.merchant.bean.Merchant;
-import com.merchant.merchant.bean.Product;
-import com.merchant.merchant.bean.UserPointHistory;
+import com.merchant.merchant.bean.*;
 import com.merchant.merchant.dto.MerchantPOJO;
+import com.merchant.merchant.dto.MerchantWalletAddPOJO;
 import com.merchant.merchant.dto.ProductPOJO;
-import com.merchant.merchant.service.MerchantService;
-import com.merchant.merchant.service.ProductService;
-import com.merchant.merchant.service.UserPointHistoryService;
+import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.MerchantToPOJOConverter;
 import com.merchant.merchant.util.ProductToPOJOConverter;
+import com.merchant.merchant.util.WalletToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +19,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,8 +40,15 @@ public class MerchantController {
     @Autowired
     UserPointHistoryService userPointHistoryService;
 
+    @Autowired
+    MerchantWalletAddService merchantWalletAddService;
+
+    @Autowired
+    MerchantQueryService merchantQueryService;
+
     HttpSession session;
 
+    /* ============== session check ======================== */
     public boolean checkMerchantSession(HttpServletRequest request)
     {
         boolean flag=false;
@@ -58,6 +63,7 @@ public class MerchantController {
         return flag;
     }
 
+    /* ============== Dash board ======================== */
     public Model dashboardViewModel(Model model)
     {
         Merchant merchant=(Merchant) session.getAttribute("merchant");
@@ -76,6 +82,7 @@ public class MerchantController {
         return model;
     }
 
+    /* ============== Logout ======================== */
     @RequestMapping("/merchant/logout")
     public String logout(HttpServletRequest request,Model model)
     {
@@ -90,6 +97,7 @@ public class MerchantController {
         return "merchant/login";
     }
 
+    /* ============== Home Login page ======================== */
     @RequestMapping("/merchant/")
     public String Test(Model model,HttpServletRequest request)
     {
@@ -103,6 +111,7 @@ public class MerchantController {
         return "merchant/login";
     }
 
+    /* ============== Login Process ======================== */
     @PostMapping("merchant/login")
     public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm,Model model, HttpServletRequest request) {
         session = request.getSession();
@@ -125,6 +134,7 @@ public class MerchantController {
         return "merchant/home";
     }
 
+    /* ============== Edit Merchant page  ======================== */
     @RequestMapping(value="/merchant/editMerchant/{id}")
     public String editMerchant(@PathVariable Integer id , Model model, HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -143,6 +153,7 @@ public class MerchantController {
         return "merchant/editMerchant";
     }
 
+    /* ============== view list of merchant ======================== */
     @RequestMapping("merchant/viewMerchant")
     public String viewMerchant(Model model,HttpServletRequest request){
         if(!checkMerchantSession(request))
@@ -156,6 +167,7 @@ public class MerchantController {
         return "merchant/merchantDetail";
     }
 
+    /* ============== view list of Product ======================== */
     @RequestMapping("merchant/viewProduct")
     public String viewProduct(Model model,HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -171,6 +183,7 @@ public class MerchantController {
         return "merchant/productDetail";
     }
 
+    /* ============== view list of Live Product ======================== */
     @RequestMapping("merchant/viewProductLive")
     public String viewProductLive(Model model,HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -188,6 +201,7 @@ public class MerchantController {
         return "merchant/productDetailLive";
     }
 
+    /* ============== view list of Draft Product ======================== */
     @RequestMapping("merchant/viewProductDraft")
     public String viewProductDraft(Model model,HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -205,7 +219,7 @@ public class MerchantController {
         return "merchant/productDetailDraft";
     }
 
-
+    /* ============== Add product Page ======================== */
     @RequestMapping("merchant/addProduct")
     public String addProduct(Model model,HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -218,6 +232,7 @@ public class MerchantController {
         return "merchant/addProduct";
     }
 
+    /* ============== Save or Update of Product in DB ======================== */
     @RequestMapping("merchant/saveProduct")
     public String saveProduct(@ModelAttribute("productForm") ProductPOJO productForm, Model model,HttpServletRequest request)
     {
@@ -269,6 +284,7 @@ public class MerchantController {
         return "merchant/addProduct";
     }
 
+    /* ============== Edit Product page ======================== */
     @RequestMapping(value="merchant/editProduct/{id}")
     public String editProduct(@PathVariable Integer id , Model model, HttpServletRequest request) {
         if(!checkMerchantSession(request))
@@ -285,6 +301,7 @@ public class MerchantController {
         return "merchant/editProduct";
     }
 
+    /* ============== Delete Product ======================== */
     @RequestMapping(value = "merchant/deleteProduct/{id}")
     public String deleteProduct(@PathVariable Integer id,Model model,HttpServletRequest request)
     {
@@ -301,6 +318,93 @@ public class MerchantController {
         }
         System.out.println("view P");
         return "merchant/productDetail";
+    }
+
+    /* ============== Wallet topup page ======================== */
+    @RequestMapping("merchant/addwallet")
+    public String addWallet(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        MerchantWalletAddPOJO merchantWalletAddPOJO=new MerchantWalletAddPOJO();
+        model.addAttribute("wallet", merchantWalletAddPOJO);
+        System.out.println("Add w");
+        return "merchant/topupwallet";
+    }
+
+    /* ============== Save/ Update Wallet balance ======================== */
+    @RequestMapping("merchant/savewallet")
+    public String saveWallet(@ModelAttribute("wallet") MerchantWalletAddPOJO merchantWalletAddPOJO,Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        try {
+            // upload image
+            String filename = "";
+            if (!merchantWalletAddPOJO.getImage().isEmpty()) {
+                String basePath = request.getServletContext().getRealPath("/walletimage");
+                filename = "AMT" + merchantWalletAddPOJO.getAmount() + "MID" + merchantWalletAddPOJO.getMerchantId() + merchantWalletAddPOJO.getImage().getOriginalFilename().replace(" ", "_");
+                try {
+                    FileUploadUtil.uploadFile(merchantWalletAddPOJO.getImage().getBytes(), basePath, filename);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            // merchant wallet record added
+            MerchantWalletAdd merchantWalletAdd = new MerchantWalletAdd();
+            merchantWalletAdd = WalletToPOJOConverter.convertPojoToMerchantWallet(merchantWalletAddPOJO, merchantWalletAdd, filename);
+            merchantWalletAdd = merchantWalletAddService.saveWallet(merchantWalletAdd);
+            if (null != merchantWalletAdd.getWalletID() && merchantWalletAdd.getWalletID() > 0) {
+                model.addAttribute("message", "Your wallet balance " + merchantWalletAdd.getAmount() + " posted with wallet ref no: " + merchantWalletAdd.getWalletID());
+            }
+           /* Integer merchantId = merchantWalletAdd.getMerchantId();
+            long point = merchantService.getMerchantPoint(merchantId);
+            point = point + merchantWalletAdd.getAmount();
+            merchantService.updateMerchantPoint(point, merchantId);*/
+            MerchantWalletAddPOJO merchantWalletAddPOJO1 = new MerchantWalletAddPOJO();
+            model.addAttribute("wallet", merchantWalletAddPOJO);
+            System.out.println("Add w");
+        }
+        catch (Exception exception)
+        {
+            model.addAttribute("message","failed to topup balance ");
+            model.addAttribute("wallet", merchantWalletAddPOJO);
+        }
+
+        return "merchant/topupwallet";
+    }
+
+    @RequestMapping("merchant/addQuery")
+    public String addQuery(Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        MerchantQuery merchantQuery=new MerchantQuery();
+        model.addAttribute("query", merchantQuery);
+        System.out.println("Add w");
+        return "merchant/query";
+    }
+
+    @RequestMapping("merchant/saveQuery")
+    public String saveQuery(@ModelAttribute("query") MerchantQuery mquery, Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
+        MerchantQuery merchantQuery=new MerchantQuery();
+        mquery.setDate(new Date(System.currentTimeMillis()));
+        merchantQuery=merchantQueryService.saveQuery(mquery);
+        if(null!=merchantQuery && merchantQuery.getMerchantQueryId()>0){
+            model.addAttribute("message","Your query has been posted with Ref No. "+merchantQuery.getMerchantQueryId());
+        }
+        model.addAttribute("query", new MerchantQuery());
+        System.out.println("Add w");
+        return "merchant/query";
     }
 
     /*

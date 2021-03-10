@@ -18,6 +18,7 @@
 
                         <!-- view Merchant -->
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/editMerchant/<%=merchant.getMerchantId() %>" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu"> View my Profile</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/addwallet" aria-expanded="false"><i class="mdi mdi-currency-btc"></i><span class="hide-menu"> Add Wallet Balnce</span></a></li>
 
                          <!-- view Product -->
                          <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu">Product </span></a>
@@ -34,6 +35,8 @@
                                    -->
                              </ul>
                          </li>
+
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/addQuery" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> Help</span></a></li>
 
 <!--
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewProduct" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Merchant's Product</span></a></li>

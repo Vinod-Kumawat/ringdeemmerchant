@@ -4,9 +4,11 @@ import com.merchant.merchant.bean.MerchantWalletAdd;
 import com.merchant.merchant.dao.MerchantWalletAddRepository;
 import com.merchant.merchant.service.MerchantWalletAddService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class MerchantWalletAddServiceImpl implements MerchantWalletAddService {
 
     @Autowired

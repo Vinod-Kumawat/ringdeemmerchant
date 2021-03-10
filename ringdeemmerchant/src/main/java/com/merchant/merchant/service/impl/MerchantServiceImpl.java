@@ -70,4 +70,14 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantRepository.findMerchantByLowPoint();
     }
 
+    @Override
+    public long getMerchantPoint(Integer merchantID) {
+        return merchantRepository.findMerchantPoint(merchantID);
+    }
+
+    @Override
+    public void updateMerchantPoint(long point, Integer merchantID) {
+        merchantRepository.updateMerchantPoint(point,merchantID);
+    }
+
 }

@@ -14,4 +14,6 @@ public interface MerchantService {
     public Merchant getMerchantByEmail(String merchantMail);
     public boolean isMerchantAlreadyRegisterByEmail(String email);
     public List<Merchant> findMerchantByLowPoint();
+    public long getMerchantPoint(Integer merchantID);
+    public void updateMerchantPoint(long point,Integer merchantID);
 }

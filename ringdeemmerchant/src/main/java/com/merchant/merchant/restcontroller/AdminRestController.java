@@ -6,11 +6,13 @@ import com.merchant.merchant.bean.Merchant;
 import com.merchant.merchant.bean.Product;
 import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.dto.MerchantPOJO;
+import com.merchant.merchant.dto.ProductPOJO;
 import com.merchant.merchant.service.AdminService;
 import com.merchant.merchant.service.MerchantService;
 import com.merchant.merchant.service.ProductService;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.MerchantToPOJOConverter;
+import com.merchant.merchant.util.ProductToPOJOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -289,6 +291,22 @@ public class AdminRestController {
             countryList.put(country.getName(),country.getName());
         }
         return countryList;
+    }
+
+    @RequestMapping(value="updateProduct/{id}")
+    public String updateProduct(@PathVariable Integer id , Model model, HttpServletRequest request) {
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+
+        Product product=productService.viewProductByID(id);
+        ProductPOJO productPOJO=new ProductPOJO();
+        productPOJO= ProductToPOJOConverter.convertProductToPOJO(product,productPOJO);
+        System.out.println(product.toString());
+        model.addAttribute("productForm",productPOJO);
+        System.out.println("Edit P");
+        return "admin/updateProduct";
     }
 
 }

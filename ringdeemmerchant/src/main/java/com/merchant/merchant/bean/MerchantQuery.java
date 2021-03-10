@@ -9,7 +9,7 @@ public class MerchantQuery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer MerchantQueryId;
+    private Integer merchantQueryId;
     @Column(name="mechantID")
     private Integer mechantID;
     @Column(name="merchantName")
@@ -22,11 +22,11 @@ public class MerchantQuery {
     private String status="pending";
 
     public Integer getMerchantQueryId() {
-        return MerchantQueryId;
+        return merchantQueryId;
     }
 
     public void setMerchantQueryId(Integer merchantQueryId) {
-        MerchantQueryId = merchantQueryId;
+        merchantQueryId = merchantQueryId;
     }
 
     public Integer getMechantID() {
@@ -72,7 +72,7 @@ public class MerchantQuery {
     @Override
     public String toString() {
         return "MerchantQuery{" +
-                "MerchantQueryId=" + MerchantQueryId +
+                "MerchantQueryId=" + merchantQueryId +
                 ", mechantID=" + mechantID +
                 ", merchantName='" + merchantName + '\'' +
                 ", msgquery='" + msgquery + '\'' +
