@@ -9,4 +9,6 @@ public interface MerchantWalletAddService {
     public List<MerchantWalletAdd> getAllWallet();
     public List<MerchantWalletAdd> getWalletByMerchantId(Integer mechantID);
     public MerchantWalletAdd saveWallet(MerchantWalletAdd merchantWalletAdd);
+    public void approveWalletByAdmin(Integer walletId);
+    public List<MerchantWalletAdd> findByStatus(String status);
 }

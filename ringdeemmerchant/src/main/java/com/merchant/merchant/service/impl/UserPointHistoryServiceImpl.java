@@ -37,6 +37,7 @@ public class UserPointHistoryServiceImpl implements UserPointHistoryService {
 
     @Override
     public List<UserPointHistory> findByMerchantID(Integer merchantId) {
+        System.out.println(merchantId);
         return userPointHistoryRepository.findByMechantID(merchantId);
     }
 }

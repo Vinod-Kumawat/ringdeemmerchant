@@ -36,7 +36,12 @@
                              </ul>
                          </li>
 
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/merchantTransaction" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu"> Transaction</span></a></li>
+
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/addQuery" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> Help</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/allWalletMID" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> My Wallet Request</span></a></li>
+                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/allQueryMID" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> My Help Request</span></a></li>
+
 
 <!--
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/viewProduct" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu"> Merchant's Product</span></a></li>

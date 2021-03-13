@@ -59,4 +59,9 @@ public class ProductServiceImpl implements ProductService {
         System.out.println(product.toString());
         productRepository.delete(product);
     }
+
+    @Override
+    public void updateProductByAdmin(int point, String status, Integer productId) {
+        productRepository.updateProductByAdmin(point, status, productId);
+    }
 }

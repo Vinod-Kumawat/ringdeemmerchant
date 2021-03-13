@@ -52,7 +52,7 @@
         <!-- Topbar header - style you can find in pages.scss -->
         <!-- ============================================================== -->
         <header class="topbar" data-navbarbg="skin5">
-            <jsp:include page="../util/header-navbar.jsp"></jsp:include>
+            <jsp:include page="../merchantutil/header-navbar.jsp"></jsp:include>
         </header>
         <!-- ============================================================== -->
         <!-- End Topbar header -->
@@ -62,7 +62,7 @@
         <!-- ============================================================== -->
         <aside class="left-sidebar" data-sidebarbg="skin5">
             <!-- Sidebar scroll-->
-            <jsp:include page="../util/sidebar.jsp"></jsp:include>
+            <jsp:include page="../merchantutil/sidebar.jsp"></jsp:include>
             <!-- End Sidebar scroll-->
         </aside>
         <!-- ============================================================== -->
@@ -78,12 +78,12 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Query</h4>
+                        <h4 class="page-title">Wallet</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">View Ticket(Query)</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Approved Wallet Balance</li>
                                 </ol>
                             </nav>
                         </div>
@@ -105,47 +105,44 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">All Pending Query</h5>
+                                <h5 class="card-title">Approved Wallet Balance</h5>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Qurey ID</th>
+                                                <th>Wallet ID</th>
                                                 <th>Merchant ID</th>
-                                                <th>Merchant Name</th>
-                                                <th>Query(Problem)</th>
-                                                <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Amount</th>
+                                                <th>Receipt Image</th>
+                                                <th>Topup Date</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        <!-- Query data here -->
-                                        <c:if test="${not empty queryList}">
+                                        <!-- Wallet data here -->
+                                        <c:if test="${not empty merchantWalletAddList}">
 
-                                            <c:forEach var="query" items="${queryList}">
+                                            <c:forEach var="wallet" items="${merchantWalletAddList}">
                                             <tr>
-                                                <td>${query.merchantQueryId}</a></td>
-                                                <td>${query.mechantID}</td>
-                                                <td>${query.merchantName}</td>
-                                                <td>${query.msgquery}</td>
-                                                <td>${query.date}</td>
-                                                <td>
-                                                    <a href="<%=request.getContextPath()%>/resolveQueryByAdmin/${query.merchantQueryId}" class="btn btn-cyan btn-sm"> Click here if Resolved </a>
-                                                </td>
-
+                                                <td>${wallet.walletID}</a></td>
+                                                <td>${wallet.merchantId}</td>
+                                                <td>${wallet.amount}</td>
+                                                <td><img src="<%=request.getContextPath()%>/walletimage/${wallet.image}" alt="product" width="50" height="60"></td>
+                                                <td>${wallet.topupDateTime}</td>
+                                                <td>${wallet.status}</td>
                                             </tr>
                                             </c:forEach>
                                         </c:if>
-                                        <!-- Query data end -->
+                                        <!-- Wallet data end -->
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Qurey ID</th>
+                                                <th>Wallet ID</th>
                                                 <th>Merchant ID</th>
-                                                <th>Merchant Name</th>
-                                                <th>Query(Problem)</th>
-                                                <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Amount</th>
+                                                <th>Receipt Image</th>
+                                                <th>Topup Date</th>
+                                                <th>Status</th>
                                             </tr>
                                         </tfoot>
                                     </table>

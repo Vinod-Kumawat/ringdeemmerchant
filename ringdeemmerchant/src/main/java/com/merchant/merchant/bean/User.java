@@ -3,6 +3,7 @@ package com.merchant.merchant.bean;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name="user")
@@ -22,6 +23,8 @@ public class User {
     private String country;
     @Column(name="contactname")
     private String contactName;
+    @Column
+    private Date createddate;
 
     @Override
     public String toString() {
@@ -32,6 +35,7 @@ public class User {
                 ", address='" + address + '\'' +
                 ", country='" + country + '\'' +
                 ", contactName='" + contactName + '\'' +
+                ", createddate=" + createddate +
                 '}';
     }
 
@@ -81,5 +85,13 @@ public class User {
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
+    }
+
+    public Date getCreateddate() {
+        return createddate;
+    }
+
+    public void setCreateddate(Date createddate) {
+        this.createddate = createddate;
     }
 }

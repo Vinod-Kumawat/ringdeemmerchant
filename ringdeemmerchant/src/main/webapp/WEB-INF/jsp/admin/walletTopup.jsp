@@ -78,12 +78,12 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Product</h4>
+                        <h4 class="page-title">Wallet</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">View Product</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Pending Wallet</li>
                                 </ol>
                             </nav>
                         </div>
@@ -105,7 +105,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Product Details</h5>
+                                <h5 class="card-title">Pending Wallet Balance</h5>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
@@ -130,7 +130,7 @@
                                                 <td><img src="<%=request.getContextPath()%>/walletimage/${wallet.image}" alt="product" width="50" height="60"></td>
                                                 <td>${wallet.topupDateTime}</td>
                                                 <td>
-                                                    <a href="#<%=request.getContextPath()%>/#/${product.productId}" class="btn btn-cyan btn-sm"> NA </a>
+                                                    <a href="<%=request.getContextPath()%>/approveWallet/${wallet.walletID}" class="btn btn-cyan btn-sm"> Click To Approve </a>
                                                 </td>
 
                                             </tr>

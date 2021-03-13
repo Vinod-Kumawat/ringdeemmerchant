@@ -33,7 +33,7 @@ public interface MerchantRepository extends JpaRepository<Merchant, Integer> {
     @Query(value = UPDATE_POINT, nativeQuery = true)
     public void updateMerchantPoint(Long point,Integer id);
 
-    public static final String LESS_POINT_MERCHANT = "SELECT m.* FROM Merchant m WHERE m.point<500";
+    public static final String LESS_POINT_MERCHANT = "SELECT m.* FROM merchant m WHERE m.point<500";
     @Transactional
     @Query(value = LESS_POINT_MERCHANT, nativeQuery = true)
     public List<Merchant> findMerchantByLowPoint();

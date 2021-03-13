@@ -78,12 +78,13 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Query</h4>
+                        <h4 class="page-title">Transaction</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">View Ticket(Query)</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Transaction
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -105,33 +106,35 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">All Pending Query</h5>
+                                <h5 class="card-title">Transaction
+                                <c:if test="${not empty merchantt}">
+                                of ${merchantt.contactName}.
+                                </c:if>
+                                </h5>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Qurey ID</th>
-                                                <th>Merchant ID</th>
-                                                <th>Merchant Name</th>
-                                                <th>Query(Problem)</th>
-                                                <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>User ID</th>
+                                                <th>Tx Date</th>
+                                                <th>Point</th>
+                                                <th>Amount</th>
+                                                <th>Discount Price</th>
+                                                <th>ProductID</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <!-- Query data here -->
-                                        <c:if test="${not empty queryList}">
+                                        <c:if test="${not empty userPointHistoryList}">
 
-                                            <c:forEach var="query" items="${queryList}">
+                                            <c:forEach var="tx" items="${userPointHistoryList}">
                                             <tr>
-                                                <td>${query.merchantQueryId}</a></td>
-                                                <td>${query.mechantID}</td>
-                                                <td>${query.merchantName}</td>
-                                                <td>${query.msgquery}</td>
-                                                <td>${query.date}</td>
-                                                <td>
-                                                    <a href="<%=request.getContextPath()%>/resolveQueryByAdmin/${query.merchantQueryId}" class="btn btn-cyan btn-sm"> Click here if Resolved </a>
-                                                </td>
+                                                <td>${tx.userId}</a></td>
+                                                <td>${tx.datetime}</a></td>
+                                                <td>${tx.productPoint}</td>
+                                                <td>${tx.amount}</td>
+                                                <td>${tx.discountprice}</td>
+                                                <td>${tx.productId}</td>
 
                                             </tr>
                                             </c:forEach>
@@ -140,12 +143,12 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Qurey ID</th>
-                                                <th>Merchant ID</th>
-                                                <th>Merchant Name</th>
-                                                <th>Query(Problem)</th>
-                                                <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>User ID</th>
+                                                <th>Tx Date</th>
+                                                <th>Point</th>
+                                                <th>Amount</th>
+                                                <th>Discount Price</th>
+                                                <th>ProductID</th>
                                             </tr>
                                         </tfoot>
                                     </table>

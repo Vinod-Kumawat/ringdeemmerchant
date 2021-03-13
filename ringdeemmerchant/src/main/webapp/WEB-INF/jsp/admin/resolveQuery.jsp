@@ -78,12 +78,12 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Product</h4>
+                        <h4 class="page-title">Query</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">View Product</li>
+                                    <li class="breadcrumb-item active" aria-current="page">View Resolved Query</li>
                                 </ol>
                             </nav>
                         </div>
@@ -105,7 +105,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Product Details</h5>
+                                <h5 class="card-title">Resolved Query Details</h5>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
@@ -115,7 +115,7 @@
                                                 <th>Merchant Name</th>
                                                 <th>Query(Problem)</th>
                                                 <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -129,9 +129,7 @@
                                                 <td>${query.merchantName}</td>
                                                 <td>${query.msgquery}</td>
                                                 <td>${query.date}</td>
-                                                <td>
-                                                    <a href="#<%=request.getContextPath()%>/#/${product.productId}" class="btn btn-cyan btn-sm"> NA </a>
-                                                </td>
+                                                <td style="color:green">Resolved</td>
 
                                             </tr>
                                             </c:forEach>
@@ -145,7 +143,7 @@
                                                 <th>Merchant Name</th>
                                                 <th>Query(Problem)</th>
                                                 <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </tfoot>
                                     </table>

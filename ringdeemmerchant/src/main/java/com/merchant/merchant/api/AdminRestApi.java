@@ -13,6 +13,7 @@ import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.dao.MerchantRepository;
 import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
+import com.merchant.merchant.util.HistoryUtil;
 import com.merchant.merchant.util.QRCodeUtile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -283,6 +284,9 @@ public class AdminRestApi {
         {
          user.setId(user2.getId());
         }
+        else{
+            user.setCreateddate(new Date(System.currentTimeMillis()));
+        }
 
         try {
 
@@ -338,12 +342,7 @@ public class AdminRestApi {
                   merchantRepository.updateMerchantPoint(point,product.getMechantID());
 
                   // create history object
-                  UserPointHistory userPointHistory=new UserPointHistory();
-                  userPointHistory.setUserId(user1.getUserId());
-                  userPointHistory.setProductPoint(String.valueOf(productPoint));
-                  userPointHistory.setProductId(String.valueOf(product.getProductId()));
-                  userPointHistory.setDatetime(new Timestamp(System.currentTimeMillis()));
-                  userPointHistory.setMechantID(product.getMechantID());
+                  UserPointHistory userPointHistory=HistoryUtil.createHistoryOnPurchase(user1,product);
                   // save history in storage
                   UserPointHistory userPointHistory1=userPointHistoryService.saveUserPointHistory(userPointHistory);
 

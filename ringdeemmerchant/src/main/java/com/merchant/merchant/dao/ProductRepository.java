@@ -24,12 +24,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
         List<Product> findByStatus(String status);
         @Transactional
         void delete(Product product);
-/*
-        @Modifying
-        @Query(value = "UPDATE Product p set image =:image where p.productId = :productId",
-                nativeQuery = true)
-        void updateProduct(@Param("image") String image, @Param("productId") Integer productId);
 
- */
+        @Transactional
+        @Modifying
+        @Query(value = "UPDATE product p SET p.product_point=?1, p.status=?2 WHERE p.product_id=?3",
+                nativeQuery = true)
+        void updateProductByAdmin(int productPoint, String status, Integer productId);
+
+
     }
 

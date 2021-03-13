@@ -13,6 +13,8 @@ public interface ProductService {
     public List<Product> viewProductByMerchantID(Integer merchantID);
     public List<Product> viewProductByStatus(String status);
     public void deleteProductByID(Integer id);
+    public void updateProductByAdmin(int point, String status, Integer id);
+
  //   public List<Product> viewProductByCountry(String country);
   //  public Product getProductByEmail(String merchantMail);
 }

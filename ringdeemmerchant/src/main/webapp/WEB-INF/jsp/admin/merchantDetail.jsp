@@ -116,7 +116,7 @@
                                                 <td>Vat Tax</td>
                                                 <td>Country</td>
                                                 <td>Point</td>
-                                                <td>View All product</td>
+                                                <td>View other details</td>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -141,11 +141,15 @@
                                                 <td>${merchant.country}</td>
                                                 <td>${merchant.point}</td>
                                                 <td>
-                                                 <a href="<%=request.getContextPath()%>/viewProductByMerchant/${merchant.merchantId}" class="btn btn-cyan btn-sm">view Product</a>
+                                                 <a href="<%=request.getContextPath()%>/viewProductByMerchant/${merchant.merchantId}" >Product</a>
+                                                 &nbsp;
+                                                 <a href="<%=request.getContextPath()%>/viewTransactionByMerchant/${merchant.merchantId}" >Transaction</a>
                                                 </td>
                                                 <td>
                                                     <a href="<%=request.getContextPath()%>/editMerchant/${merchant.merchantId}" class="btn btn-cyan btn-sm">Edit</a>
+                                                   <!--
                                                     <a href="<%=request.getContextPath()%>/deleteMerchant/${merchant.merchantId}" class="btn btn-danger btn-sm">Delete</a>
+                                                    -->
                                                 </td>
                                             </tr>
                                             </c:forEach>

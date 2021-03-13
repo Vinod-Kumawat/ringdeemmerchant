@@ -13,14 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,11 +70,13 @@ public class MerchantController {
         int totalProduct=productList.size();
         long totalLiveProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Live"))).count();
         long totalDraftProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Draft"))).count();
-        long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
+      //  long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
         model.addAttribute("totalProduct",totalProduct);
         model.addAttribute("totalDraftProduct",totalDraftProduct);
         model.addAttribute("totalLiveProduct",totalLiveProduct);
-        model.addAttribute("totalSellPoint",totalSellPoint);
+       // model.addAttribute("totalSellPoint",totalSellPoint);
+        model.addAttribute("totalSellCount",userPointHistoryList.size());
+
         return model;
     }
 
@@ -127,6 +125,10 @@ public class MerchantController {
                 //}
                 System.out.println("login Successfull");
                 model=dashboardViewModel(model);
+            }
+            else
+            {
+                return logout(request, model);
             }
             // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
 
@@ -409,103 +411,46 @@ public class MerchantController {
         return "merchant/query";
     }
 
-    /*
-
-    @RequestMapping("admin/home")
-    public String Test1()
+    @RequestMapping(value = "/merchant/allWalletMID")
+    public String allWalletMID(Model model, HttpServletRequest request)
     {
-        System.out.println("Home");
-        return "admin/home";
-    }
-
-    @RequestMapping("/addMerchant")
-    public String addMerchant(Model model)
-    {
-        model.addAttribute("merchantForm", new Merchant());
-        System.out.println("Add M");
-        return "admin/addmerchant";
-    }
-
-    @RequestMapping("/saveMerchant")
-    public String saveMerchant(@ModelAttribute("merchantForm") Merchant merchantForm,Model model)
-    {
-        Merchant merchant=null;
-        try {
-             merchant=merchantService.addMerchant(merchantForm);
-            System.out.println(merchantForm.getCompanyName());
-
-            // model.addAttribute("merchantForm", new Merchant());
-            System.out.println("Add M: "+merchant);
-
-            if(null==merchantForm.getMerchantId())
-            {
-                model.addAttribute("message","Merchant added with merchantID "+merchant.getMerchantId());
-            }
-            else {
-                model.addAttribute("message","Merchant Updated with merchantID "+merchant.getMerchantId());
-            }
-
-            model.addAttribute("merchantForm", new Merchant());
-
-
-        }
-        catch (Exception ex)
+        if(!checkMerchantSession(request))
         {
-            model.addAttribute("merchantForm", null!=merchant?merchant: new Merchant());
-            model.addAttribute("message","Merchant added with merchantID "+merchant.getMerchantId());
-
+            return logout(request,model);
         }
-                return "admin/addmerchant";
+        int mid=getMerchantIDBySession(request);
+        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.getWalletByMerchantId(mid);
+        model.addAttribute("merchantWalletAddList", merchantWalletAddList);
+        return "merchant/walletList";
     }
 
-    @RequestMapping(value="/editMerchant/{id}")
-    public String editMerchant(@PathVariable Integer id , Model model) {
-        Merchant merchant=merchantService.viewMerchantByID(id);
-        System.out.println(merchant.toString());
-        model.addAttribute("merchantForm",merchant);
-        System.out.println("Edit M");
-
-        return "admin/editMerchant";
+    @RequestMapping(value = "/merchant/allQueryMID")
+    public String allQueryMID(Model model, HttpServletRequest request)
+    {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        int mid=getMerchantIDBySession(request);
+        List<MerchantQuery> merchantQueryList=merchantQueryService.findQueryByMerchantId(mid);
+        model.addAttribute("merchantQueryList", merchantQueryList);
+        return "merchant/queryList";
     }
 
-    @RequestMapping("/deleteMerchant")
-    public String deleteMerchant() {
-        System.out.println("Delete M");
-        return "admin/merchantDetail";
+    @RequestMapping(value = "/merchant/merchantTransaction")
+    public String merchantTransaction(Model model, HttpServletRequest request)
+    {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        Integer mid=getMerchantIDBySession(request);
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findByMerchantID(mid);
+        model.addAttribute("userPointHistoryList", userPointHistoryList);
+        return "merchant/merchantTransaction";
     }
 
-    @RequestMapping("/viewMerchant")
-    public String viewMerchant(Model model){
 
-        List<Merchant> merchantList=merchantService.viewMerchant();
-        model.addAttribute("merchantList",merchantList);
-        System.out.println("view M");
-        return "admin/merchantDetail";
-    }
-
-    @RequestMapping("/viewProduct")
-    public String viewProduct() {
-        System.out.println("view P");
-        return "admin/productDetail";
-    }
-
-    @RequestMapping("/viewTransaction")
-    public String viewTransaction() {
-        System.out.println("view T");
-        return "admin/transactionDetail";
-    }
-
-    @RequestMapping("/viewTotalSell")
-    public String viewTotalSell() {
-        System.out.println("view T S");
-        return "admin/totalSellDetail";
-    }
-
-    @RequestMapping("/viewPoint")
-    public String viewPoint() {
-        System.out.println("view c point");
-        return "admin/comsumePointByMerchant";
-    }*/
 
     public  Integer getMerchantIDBySession(HttpServletRequest request){
         Integer merchantID;

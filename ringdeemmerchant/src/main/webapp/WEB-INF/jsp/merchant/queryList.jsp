@@ -52,7 +52,7 @@
         <!-- Topbar header - style you can find in pages.scss -->
         <!-- ============================================================== -->
         <header class="topbar" data-navbarbg="skin5">
-            <jsp:include page="../util/header-navbar.jsp"></jsp:include>
+            <jsp:include page="../merchantutil/header-navbar.jsp"></jsp:include>
         </header>
         <!-- ============================================================== -->
         <!-- End Topbar header -->
@@ -62,7 +62,7 @@
         <!-- ============================================================== -->
         <aside class="left-sidebar" data-sidebarbg="skin5">
             <!-- Sidebar scroll-->
-            <jsp:include page="../util/sidebar.jsp"></jsp:include>
+            <jsp:include page="../merchantutil/sidebar.jsp"></jsp:include>
             <!-- End Sidebar scroll-->
         </aside>
         <!-- ============================================================== -->
@@ -115,23 +115,21 @@
                                                 <th>Merchant Name</th>
                                                 <th>Query(Problem)</th>
                                                 <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <!-- Query data here -->
-                                        <c:if test="${not empty queryList}">
+                                        <c:if test="${not empty merchantQueryList}">
 
-                                            <c:forEach var="query" items="${queryList}">
+                                            <c:forEach var="query" items="${merchantQueryList}">
                                             <tr>
                                                 <td>${query.merchantQueryId}</a></td>
                                                 <td>${query.mechantID}</td>
                                                 <td>${query.merchantName}</td>
                                                 <td>${query.msgquery}</td>
                                                 <td>${query.date}</td>
-                                                <td>
-                                                    <a href="<%=request.getContextPath()%>/resolveQueryByAdmin/${query.merchantQueryId}" class="btn btn-cyan btn-sm"> Click here if Resolved </a>
-                                                </td>
+                                                <td>${query.status}</td>
 
                                             </tr>
                                             </c:forEach>
@@ -145,7 +143,7 @@
                                                 <th>Merchant Name</th>
                                                 <th>Query(Problem)</th>
                                                 <th>Posted Date</th>
-                                                <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </tfoot>
                                     </table>

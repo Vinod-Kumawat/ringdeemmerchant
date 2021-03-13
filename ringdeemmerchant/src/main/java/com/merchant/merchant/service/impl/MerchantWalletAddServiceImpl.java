@@ -33,4 +33,14 @@ public class MerchantWalletAddServiceImpl implements MerchantWalletAddService {
     public MerchantWalletAdd saveWallet(MerchantWalletAdd merchantWalletAdd) {
         return merchantWalletAddRepository.save(merchantWalletAdd);
     }
+
+    @Override
+    public void approveWalletByAdmin(Integer walletId) {
+        merchantWalletAddRepository.apporveWalletBalance(walletId);
+    }
+
+    @Override
+    public List<MerchantWalletAdd> findByStatus(String status) {
+        return merchantWalletAddRepository.findByStatus(status);
+    }
 }

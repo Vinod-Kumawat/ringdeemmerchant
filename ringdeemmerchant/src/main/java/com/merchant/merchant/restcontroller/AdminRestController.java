@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
@@ -50,6 +51,10 @@ public class AdminRestController {
     @Autowired
     CountryRepository countryRepository;
 
+    @Autowired
+    UserPointHistoryService userPointHistoryService;
+
+
     HttpSession session=null;
 
     public boolean checkAdminSession(HttpServletRequest request)
@@ -66,11 +71,39 @@ public class AdminRestController {
         return flag;
     }
 
+    public Model dashboardViewModelAdmin(Model model)
+    {
+        //Merchant merchant=(Merchant) session.getAttribute("merchant");
+      //  merchant=merchantService.viewMerchantByID(merchant.getMerchantId());
+     //   session.setAttribute("merchant", merchant);
+        List<Merchant> merchantList=merchantService.viewMerchant();
+        List<Product> productList=productService.viewProduct();
+        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.findByStatus("Pending");
+        List<MerchantQuery> merchantQueryList=merchantQueryService.findByStatus(QUERY_STATUS_P);
+
+        long totalMerchant=merchantList.size();
+        int totalProduct=productList.size();
+        long totalLiveProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Live"))).count();
+        long totalDraftProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Draft"))).count();
+        long totalPendingWallet=merchantWalletAddList.size();
+        long totalPendingQuery=merchantQueryList.size();
+      //  long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
+        model.addAttribute("totalMerchant",totalMerchant);
+        model.addAttribute("totalProduct",totalProduct);
+        model.addAttribute("totalDraftProduct",totalDraftProduct);
+        model.addAttribute("totalLiveProduct",totalLiveProduct);
+        model.addAttribute("totalPendingWallet",totalPendingWallet);
+        model.addAttribute("totalPendingQuery",totalPendingQuery);
+
+        return model;
+    }
+
     @RequestMapping("/")
     public String Test(Model model,HttpServletRequest request)
     {
         String url="login";
         if(checkAdminSession(request)){
+            model=dashboardViewModelAdmin(model);
             url="admin/home";
         }
         else {
@@ -81,7 +114,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/login")
-    public String Login(@ModelAttribute("loginForm") Admin loginForm, HttpServletRequest request)
+    public String Login(@ModelAttribute("loginForm") Admin loginForm, Model model, HttpServletRequest request)
     {
         session=request.getSession();
         if(checkAdminSession(request)){
@@ -96,6 +129,7 @@ public class AdminRestController {
                 return "login";
             }
         }
+        model=dashboardViewModelAdmin(model);
         System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
         return "admin/home";
     }
@@ -272,12 +306,26 @@ public class AdminRestController {
         if(!checkAdminSession(request)){
             return logout(request,model);
         }
-        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.getAllWallet();
+        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.findByStatus("Pending");
         model.addAttribute("merchantWalletAddList",merchantWalletAddList);
 
         System.out.println("view P");
         return "admin/walletTopup";
     }
+
+    @RequestMapping("/viewApprovedWalletTopup")
+    public String viewApprovedWalletTopup(Model model,HttpServletRequest request)
+    {
+        if(!checkAdminSession(request)){
+            return logout(request,model);
+        }
+        List<MerchantWalletAdd> merchantWalletAddList=merchantWalletAddService.findByStatus("Approved");
+        model.addAttribute("merchantWalletAddList",merchantWalletAddList);
+
+        System.out.println("view P");
+        return "admin/approvedWalletTopup";
+    }
+
 
     /*======== inbox Query ======================*/
     @RequestMapping("/viewInboxQuery")
@@ -292,23 +340,6 @@ public class AdminRestController {
         System.out.println("view P");
         return "admin/inboxQuery";
     }
-
-
-    @RequestMapping(value="resolvedQuery/{id})")
-    public String resolvedQuery(@PathVariable Integer id, Model model, HttpServletRequest request){
-        if(null==id)
-        {
-            return viewInboxQuery(model,request);
-        }
-
-        if(!checkAdminSession(request)){
-            return logout(request,model);
-        }
-
-            merchantQueryService.changeStatus(id);
-         return viewInboxQuery(model,request);
-    }
-
 
     /*======== Resolved Query ======================*/
     @RequestMapping("/viewResolvedQuery")
@@ -399,6 +430,92 @@ public class AdminRestController {
         model.addAttribute("productForm",productPOJO);
         System.out.println("Edit P");
         return "admin/updateProduct";
+    }
+
+    @RequestMapping(value = "/saveProduct")
+    public String saveProduct(@ModelAttribute("productForm") ProductPOJO productPOJO, Model model, HttpServletRequest request)
+    {
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+        // update product point
+        int point=productPOJO.getProductPoint();
+        String status=productPOJO.getStatus();
+        Integer pid=productPOJO.getProductId();
+        productService.updateProductByAdmin(point,status,pid);
+
+
+        List<Product> productList=productService.viewProduct();
+        model.addAttribute("message","Product updated Successfully with PID: "+pid);
+        model.addAttribute("productList",productList);
+        System.out.println("point updated  P");
+        return "admin/productDetail";
+    }
+
+    @RequestMapping(value = "/approveWallet/{id}")
+    public String approveWallet(@PathVariable Integer id, Model model, HttpServletRequest request){
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+
+        if(null!=id && id>0)
+        {
+            // approve wallet amount
+            merchantWalletAddService.approveWalletByAdmin(id);
+        }
+        // fetch approved wallet detail
+        MerchantWalletAdd merchantWalletAdd=merchantWalletAddService.getWalletByID(id);
+        // get merchant id from respective wallet
+        Integer merchantId = merchantWalletAdd.getMerchantId();
+        // get merchant current point to merchant original  point
+        long point = merchantService.getMerchantPoint(merchantId);
+        // upgrade merchant Point
+        point = point + merchantWalletAdd.getAmount();
+        // update merchant point
+        merchantService.updateMerchantPoint(point, merchantId);
+        return viewAllWalletTopup(model, request);
+    }
+
+    @RequestMapping(value = "/resolveQueryByAdmin/{id}")
+    public String resolveQueryByAdmin(@PathVariable Integer id, Model model, HttpServletRequest request){
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+
+        if(null!=id && id>0)
+        {
+            // approve query
+            merchantQueryService.changeStatus(id);
+        }
+        return viewInboxQuery(model, request);
+    }
+
+    @RequestMapping(value = "/transaction")
+    public String ViewTransaction(Model model, HttpServletRequest request)
+    {
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findAll();
+        model.addAttribute("userPointHistoryList", userPointHistoryList);
+        return "admin/transaction";
+    }
+
+    @RequestMapping(value = "/viewTransactionByMerchant/{id}")
+    public String viewTransactionByMerchant(@PathVariable Integer id, Model model, HttpServletRequest request)
+    {
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findByMerchantID(id);
+        model.addAttribute("merchantt",merchantService.viewMerchantByID(id));
+        model.addAttribute("userPointHistoryList", userPointHistoryList);
+        return "admin/transaction";
     }
 
 }

@@ -106,6 +106,11 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Product Details</h5>
+                                <c:if test="${not empty message}">
+                                    <div class="alert alert-success">
+                                          <strong>Success!</strong> ${message}.
+                                    </div>
+                                </c:if>
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
@@ -114,12 +119,17 @@
                                                 <th>Merchant ID</th>
                                                 <th>Product Name</th>
                                                 <th>Product Point</th>
+                                                <th>Category</th>
+                                                <th>Price</th>
+                                                <th>Discount Price</th>
                                                 <th>Show On Day</th>
                                                 <th>Description</th>
                                                 <th>Other Info</th>
                                                 <th>Photo</th>
+                                                <th>Status</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
                                                 <th>Action</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -128,15 +138,20 @@
 
                                             <c:forEach var="product" items="${productList}">
                                             <tr>
-                                                <td><a href="#" class="btn btn-success btn-cm">${product.productId}</a></td>
+                                                <td><a href="<%=request.getContextPath()%>/updateProduct/${product.productId}" class="btn btn-success btn-cm">${product.productId}</a></td>
                                                 <td>${product.mechantID}</td>
                                                 <td>${product.productName}</td>
                                                 <td>${product.productPoint}</td>
+                                                <td>${product.category}</td>
+                                                <td>${product.price}</td>
+                                                <td>${product.discountprice}</td>
                                                 <td>${product.showOnDay}</td>
                                                 <td>${product.description}</td>
                                                 <td>${product.otherInfo}</td>
                                                 <td><img src="<%=request.getContextPath()%>/productimage/${product.image}" alt="product" width="50" height="60"></td>
-
+                                                <td>${product.status}</td>
+                                                <td>${product.startdate}</td>
+                                                <td>${product.enddate}</td>
                                                 <td>
                                                     <c:if test="${product.status=='Live'}">
                                                     <a href="<%=request.getContextPath()%>/updateProduct/${product.productId}" class="btn btn-cyan btn-sm"> ${product.status} </a>
@@ -157,14 +172,17 @@
                                                 <th>Merchant ID</th>
                                                 <th>Product Name</th>
                                                 <th>Product Point</th>
+                                                <th>Category</th>
+                                                <th>Price</th>
+                                                <th>Discount Price</th>
                                                 <th>Show On Day</th>
                                                 <th>Description</th>
                                                 <th>Other Info</th>
                                                 <th>Photo</th>
                                                 <th>Status</th>
-                                                <!--
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
                                                 <th>Action</th>
-                                                -->
                                             </tr>
                                         </tfoot>
                                     </table>

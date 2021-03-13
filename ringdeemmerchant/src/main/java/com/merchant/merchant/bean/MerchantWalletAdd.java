@@ -22,6 +22,8 @@ public class MerchantWalletAdd {
     private String image;
     @Column(name="topup_date_time")
     private Timestamp topupDateTime;
+    @Column(name = "status")
+    private String status="Pending";
 
     public Integer getWalletID() {
         return walletID;
@@ -63,14 +65,23 @@ public class MerchantWalletAdd {
         this.image = image;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "MerchantWalletAdd{" +
                 "walletID=" + walletID +
-                ", topupDateTime=" + topupDateTime +
                 ", merchantId=" + merchantId +
                 ", amount=" + amount +
                 ", image='" + image + '\'' +
+                ", topupDateTime=" + topupDateTime +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
