@@ -38,6 +38,13 @@ public class AdminRestApi {
     public static final String LIVE = "Live";
     public static final String DRAFT = "Draft";
     public static final String ARCH = "Archive";
+    public static final String CATE_POPULAR = "Popular";
+    public static final String CATE_MEAL_VEG = "Meals(Veg)";
+    public static final String CATE_MEAL_NON_VEG = "Meals(Non-Veg)";
+    public static final String CATE_COMBO = "Combos";
+    public static final String CATE_DESSERT = "Desserts";
+    public static final String CATE_NEW = "New";
+
 
     @Autowired
     AdminService adminService;
@@ -372,8 +379,13 @@ public class AdminRestApi {
         {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
+
         List<Product> productList1 = new ArrayList<>();
+        // filter live
         productList = productList.stream().filter(p -> (null != p.getStatus() && p.getStatus().equals(LIVE))).collect(Collectors.toList());
+
+        // filter by end date should not be less to today date
+        productList=productList.stream().filter(p->(null!=p.getEnddate() && (p.getEnddate().compareTo(new Date(System.currentTimeMillis())))>0)).collect(Collectors.toList());
 
         if (null != productList && productList.size() > 0) {
             for (Product p : productList) {
@@ -472,6 +484,37 @@ public class AdminRestApi {
             else {
                 return ResponseEntity.status(200).body(prepareMsg("No Record found"));
             }
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
+
+    @PostMapping(path = "/viewProductByMerchantAndCategory")
+    public ResponseEntity viewProductByMerchantAndCategory(@RequestParam("id") Integer id, @RequestParam("category") String category) {
+
+        List<Product> productList = productService.viewProductByMerchantID(id);
+        List<Product> productList1 = new ArrayList<>();
+        if(null!=category && category.equalsIgnoreCase(CATE_COMBO)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_COMBO))).collect(Collectors.toList());
+        }
+        else if(null!=category && category.equalsIgnoreCase(CATE_DESSERT)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_DESSERT))).collect(Collectors.toList());
+        }
+        else if(null!=category && category.equalsIgnoreCase(CATE_NEW)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_NEW))).collect(Collectors.toList());
+        }
+        else if(null!=category && category.equalsIgnoreCase(CATE_MEAL_VEG)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_MEAL_VEG))).collect(Collectors.toList());
+        }
+        else if(null!=category && category.equalsIgnoreCase(CATE_POPULAR)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_POPULAR))).collect(Collectors.toList());
+        }
+        else if(null!=category && category.equalsIgnoreCase(CATE_MEAL_NON_VEG)){
+            productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_MEAL_NON_VEG))).collect(Collectors.toList());
+        }
+
+        if (null != productList1 && productList1.size() > 0) {
+            return ResponseEntity.status(200).body(productList1);
         } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }

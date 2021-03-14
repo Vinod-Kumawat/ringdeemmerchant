@@ -145,25 +145,27 @@ public class MerchantController {
     @PostMapping("merchant/login")
     public String Login(@ModelAttribute("merchantLoginForm") Merchant merchantLoginForm,Model model, HttpServletRequest request) {
         session = request.getSession();
-        if (checkMerchantSession(request)) {
-            // do nothing
-        } else {
-            Merchant merchant = merchantService.getMerchantByEmail(merchantLoginForm.getMerchantMail());
-            if (merchant.getPassword().equals(merchantLoginForm.getPassword())) {
-                //if(null==request.getSession()){
-                session = request.getSession();
-                session.setAttribute("merchant", merchant);
+        try {
+            if (checkMerchantSession(request)) {
+                // do nothing
+            } else {
+                Merchant merchant = merchantService.getMerchantByEmail(merchantLoginForm.getMerchantMail());
+                if (merchant.getPassword().equals(merchantLoginForm.getPassword())) {
+                    //if(null==request.getSession()){
+                    session = request.getSession();
+                    session.setAttribute("merchant", merchant);
 
-                //}
-                System.out.println("login Successfull");
-                model=dashboardViewModel(model);
-            }
-            else
-            {
-                return logout(request, model);
-            }
-            // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
+                    //}
+                    System.out.println("login Successfull");
+                    model = dashboardViewModel(model);
+                } else {
+                    return logout(request, model);
+                }
+                // System.out.println("Login"+loginForm.getUserName()+" "+loginForm.getPassWord());
 
+            }
+        }catch (Exception ex){
+            return logout(request,model);
         }
         return "merchant/home";
     }
