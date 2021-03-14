@@ -5,7 +5,7 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav" class="p-t-30">
-                        <li class="sidebar-item"> <a href="<%=request.getContextPath()%>/index" class="sidebar-link waves-effect waves-dark sidebar-link" href="#index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
+                        <li class="sidebar-item"> <a href="<%=request.getContextPath()%>/" class="sidebar-link waves-effect waves-dark sidebar-link" href="#index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">Merchant </span></a>
                              <ul aria-expanded="false" class="collapse  first-level">
                                    <li class="sidebar-item"><a href="<%=request.getContextPath()%>/addMerchant" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> Add New Merchant </span></a></li>

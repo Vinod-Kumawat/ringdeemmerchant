@@ -24,6 +24,106 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+<script type="text/javascript">
+     function setBarChartMerchantByCountry() {
+
+    	var chart = new CanvasJS.Chart("chartContainer",
+    	{
+    		title: {
+    			text: "Graph by Number of Merchant By Country"
+    		},
+    		dataPointMaxWidth: 15,
+    		data: [
+    		{
+    			type: "column",
+    			dataPoints: [
+    			 <c:if test="${not empty graphMerchantByCountry}">
+                  <c:forEach var="mercahnt" items="${graphMerchantByCountry}">
+    				{ label: "${mercahnt.key}", y: ${mercahnt.value} },
+    			</c:forEach>
+    			</c:if>
+    			]
+    		}
+    		]
+    	});
+    	chart.render();
+    }
+
+      function setBarChartProductByMerchant() {
+
+        	var chart = new CanvasJS.Chart("chartContainer",
+        	{
+        		title: {
+        			text: "Graph by Number of Product Each Merchant"
+        		},
+        		dataPointMaxWidth: 15,
+        		data: [
+        		{
+        			type: "column",
+        			dataPoints: [
+        			 <c:if test="${not empty graphProductByMercahnt}">
+                      <c:forEach var="product" items="${graphProductByMercahnt}">
+        				{ label: "${product.key}", y: ${product.value} },
+        			</c:forEach>
+        			</c:if>
+        			]
+        		}
+        		]
+        	});
+        	chart.render();
+        }
+
+        function setBarChartProductSellM() {
+
+                	var chart = new CanvasJS.Chart("chartContainer",
+                	{
+                		title: {
+                			text: "Graph by Total Product Sell of each Merchant"
+                		},
+                		dataPointMaxWidth: 15,
+                		data: [
+                		{
+                			type: "column",
+                			dataPoints: [
+                			 <c:if test="${not empty graphProductSellM}">
+                              <c:forEach var="product" items="${graphProductSellM}">
+                				{ label: "${product.key}", y: ${product.value} },
+                			</c:forEach>
+                			</c:if>
+                			]
+                		}
+                		]
+                	});
+                	chart.render();
+                }
+
+                function setBarChartBusinessM() {
+
+                	var chart = new CanvasJS.Chart("chartContainer",
+                	{
+                		title: {
+                			text: "Graph by Total Business(Amount) of each Merchant"
+                		},
+                		dataPointMaxWidth: 15,
+                		data: [
+                		{
+                			type: "column",
+                			dataPoints: [
+                			 <c:if test="${not empty graphBusinessSellM}">
+                              <c:forEach var="product" items="${graphBusinessSellM}">
+                				{ label: "${product.key}", y: ${product.value} },
+                			</c:forEach>
+                			</c:if>
+                			]
+                		}
+                		]
+                	});
+                	chart.render();
+                }
+    </script>
+
+
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </head>
 
 <body>
@@ -95,6 +195,7 @@
                 
 				 <!-- Vinu: below you can add your card, static, form , data table  -->
 				 <jsp:include page="../util/card.jsp"></jsp:include>
+				 <jsp:include page="../util/chart.jsp"></jsp:include>
 
 				<!--
                -->
@@ -144,8 +245,14 @@
     <script src="assets/libs/flot/jquery.flot.time.js"></script>
     <script src="assets/libs/flot/jquery.flot.stack.js"></script>
     <script src="assets/libs/flot/jquery.flot.crosshair.js"></script>
+    <script src="assets/libs/chart/jquery.peity.min.js"></script>
+    <script src="assets/libs/chart/matrix.charts.js"></script>
+    <script src="assets/libs/chart/jquery.flot.pie.min.js"></script>
     <script src="assets/libs/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+    <script src="assets/libs/chart/turning-series.js"></script>
     <script src="dist/js/pages/chart/chart-page-init.js"></script>
+
+
 
 </body>
 

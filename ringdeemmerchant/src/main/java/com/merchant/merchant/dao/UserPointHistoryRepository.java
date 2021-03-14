@@ -16,7 +16,7 @@ public interface UserPointHistoryRepository extends JpaRepository<UserPointHisto
         @Transactional
         UserPointHistory save(UserPointHistory userPointHistory);
         @Transactional
-        UserPointHistory findByUserId(String userId);
+        List<UserPointHistory> findByUserId(String userId);
         @Transactional
         List<UserPointHistory> findByProductId(String productID);
         @Transactional

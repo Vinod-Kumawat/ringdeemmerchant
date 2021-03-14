@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
@@ -24,6 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
         List<Product> findByStatus(String status);
         @Transactional
         void delete(Product product);
+        @Transactional
+        List<Product> findByProductIdIn(Set<Integer> integerSet);
 
         @Transactional
         @Modifying

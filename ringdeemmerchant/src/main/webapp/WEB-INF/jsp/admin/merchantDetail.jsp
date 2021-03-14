@@ -115,7 +115,7 @@
                                                 <td>Tax Number</td>
                                                 <td>Vat Tax</td>
                                                 <td>Country</td>
-                                                <td>Point</td>
+                                                <td>Amount</td>
                                                 <td>View other details</td>
                                                 <th>Action</th>
                                             </tr>
@@ -171,7 +171,8 @@
                                                 <td>Tax Number</td>
                                                 <td>Vat Tax</td>
                                                 <td>Country</td>
-                                                <td>Point</td>
+                                                <td>Amount</td>
+                                                <td>View other details</td>
                                                 <th>Action</th>
                                             </tr>
                                         </tfoot>

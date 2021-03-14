@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminRestController {
@@ -94,6 +92,49 @@ public class AdminRestController {
         model.addAttribute("totalLiveProduct",totalLiveProduct);
         model.addAttribute("totalPendingWallet",totalPendingWallet);
         model.addAttribute("totalPendingQuery",totalPendingQuery);
+
+        // merchant by Country
+        Map<String,Integer> merchantMap=new HashMap<>();
+        Set<String> countrySet=merchantList.stream().map(m->m.getCountry()).collect(Collectors.toSet());
+        for (String s:countrySet){
+            if(null!=s && s.length()>0) {
+                List<Merchant> merchantList1 = merchantList.stream().filter(m->(null!=m && m.getCountry().equalsIgnoreCase(s))).collect(Collectors.toList());
+                merchantMap.put(s,merchantList1.size());
+            }
+        }
+        model.addAttribute("graphMerchantByCountry", merchantMap);
+
+        // product by merchant
+        Map<String,Integer> productMap=new HashMap<>();
+        Set<String> merchantSet=merchantList.stream().map(m->(m.getMerchantId()+":"+m.getCompanyName())).collect(Collectors.toSet());
+        for (String s:merchantSet) {
+            if (null != s && s.length() > 0) {
+                List<Product> productList1=productList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).collect(Collectors.toList());
+                productMap.put(s,productList1.size());
+            }
+        }
+        model.addAttribute("graphProductByMercahnt", productMap);
+
+        // product by merchant
+        Map<String,Long> productSellMap=new HashMap<>();
+        Map<String,Long> businessSellMap=new HashMap<>();
+
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findAll();
+         for (String s:merchantSet) {
+            if (null != s && s.length() > 0) {
+                long productCount=userPointHistoryList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p->p.getProductId()).count();
+                productSellMap.put(s,productCount);
+                long busessValue=userPointHistoryList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p->Long.valueOf(p.getDiscountprice())).reduce(Long.parseLong("0"),Long::sum);
+                businessSellMap.put(s,busessValue);
+            }
+        }
+        model.addAttribute("graphProductSellM", productSellMap);
+        model.addAttribute("graphBusinessSellM", businessSellMap);
+
+
+
+
+
 
         return model;
     }

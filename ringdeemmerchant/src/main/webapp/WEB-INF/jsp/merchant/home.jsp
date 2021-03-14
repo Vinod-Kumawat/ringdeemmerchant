@@ -25,6 +25,32 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+<script type="text/javascript">
+     function setBarChart() {
+
+    	var chart = new CanvasJS.Chart("chartContainer",
+    	{
+    		title: {
+    			text: "Graph by Number of Product Sell of each Product"
+    		},
+    		dataPointMaxWidth: 15,
+    		data: [
+    		{
+    			type: "column",
+    			dataPoints: [
+    			 <c:if test="${not empty graphPoductSell}">
+                  <c:forEach var="products" items="${graphPoductSell}">
+    				{ label: "${products.key}", y: ${products.value} },
+    				</c:forEach>
+    			</c:if>
+    			]
+    		}
+    		]
+    	});
+    	chart.render();
+    }
+    </script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </head>
 
 <body>
@@ -104,6 +130,7 @@
                 
 				 <!-- Vinu: below you can add your card, static, form , data table  -->
 				 <jsp:include page="../merchantutil/card.jsp"></jsp:include>
+				 <jsp:include page="../merchantutil/chart.jsp"></jsp:include>
 
 				<!--
                -->
@@ -147,6 +174,7 @@
     <!--This page JavaScript -->
     <!-- <script src="../dist/js/pages/dashboards/dashboard1.js"></script> -->
     <!-- Charts js Files -->
+
     <script src="../assets/libs/flot/excanvas.js"></script>
     <script src="../assets/libs/flot/jquery.flot.js"></script>
     <script src="../assets/libs/flot/jquery.flot.pie.js"></script>
@@ -154,8 +182,9 @@
     <script src="../assets/libs/flot/jquery.flot.stack.js"></script>
     <script src="../assets/libs/flot/jquery.flot.crosshair.js"></script>
     <script src="../assets/libs/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+<--
     <script src="../dist/js/pages/chart/chart-page-init.js"></script>
-
+    -->
 </body>
 
 </html>

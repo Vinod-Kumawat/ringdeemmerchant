@@ -11,6 +11,7 @@ import com.merchant.merchant.bean.User;
 import com.merchant.merchant.bean.UserPointHistory;
 import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.dao.MerchantRepository;
+import com.merchant.merchant.dao.UserPointHistoryRepository;
 import com.merchant.merchant.service.*;
 import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.HistoryUtil;
@@ -23,20 +24,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/v1")
 public class AdminRestApi {
 
-    public static final String LIVE="Live";
-    public static final String DRAFT="Draft";
+    public static final String LIVE = "Live";
+    public static final String DRAFT = "Draft";
+    public static final String ARCH = "Archive";
+
     @Autowired
     AdminService adminService;
 
@@ -57,339 +59,300 @@ public class AdminRestApi {
     @Autowired
     ServletContext servletContext;
 
-    public String generalMsg="{\"status\":\"200\",\"message\":\"";
-    public String endMsg="}";
+    public String generalMsg = "{\"status\":\"200\",\"message\":\"";
+    public String endMsg = "}";
 
-    public String prepareMsg(String msg)
-    {
-        return generalMsg+msg+"\""+endMsg;
-    }
-    public String prepareMsgWithID(String msg,Integer id)
-    {
-        return generalMsg+msg+"\",\"Id\":"+id+endMsg;
+    public String prepareMsg(String msg) {
+        return generalMsg + msg + "\"" + endMsg;
     }
 
+    public String prepareMsgWithID(String msg, Integer id) {
+        return generalMsg + msg + "\",\"Id\":" + id + endMsg;
+    }
 
-    @PostMapping(path="/loginApp")
-    public ResponseEntity getLogin(@RequestParam("username") String username,@RequestParam("password") String password)
-    {
-        Merchant merchant=null;
-         Merchant merchant1 = merchantService.getMerchantByEmail(username);
-        if (null!=merchant1 && merchant1.getPassword().equals(password)){
-            merchant=merchant1;
-            merchant.setImage("/merchantimage/"+merchant.getImage());
+
+    @PostMapping(path = "/loginApp")
+    public ResponseEntity getLogin(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Merchant merchant = null;
+        Merchant merchant1 = merchantService.getMerchantByEmail(username);
+        if (null != merchant1 && merchant1.getPassword().equals(password)) {
+            merchant = merchant1;
+            merchant.setImage("/merchantimage/" + merchant.getImage());
             return ResponseEntity.status(200).body(merchant);
-        }
-        else{
+        } else {
 
             return ResponseEntity.status(200).body(prepareMsg("UserName & password doesn't match"));
         }
     }
 
-    @PostMapping(path="/addMerchant")
-    public String addAndSaveMerchant(@RequestBody Merchant merchant)
-    {
-        String msg="";
+    @PostMapping(path = "/addMerchant")
+    public String addAndSaveMerchant(@RequestBody Merchant merchant) {
+        String msg = "";
         try {
-            if(null==merchant.getMerchantId())
-            {
-                msg= "Merchant added with merchantID:";
+            if (null == merchant.getMerchantId()) {
+                msg = "Merchant added with merchantID:";
+            } else {
+                msg = "Merchant Updated with merchantID:";
             }
-            else {
-                msg= "Merchant Updated with merchantID:";
-            }
-            merchant=merchantService.addMerchant(merchant);
-            msg+=merchant.getMerchantId();
-        }
-        catch (Exception ex)
-        {
-           msg="something wrong please try again";
+            merchant = merchantService.addMerchant(merchant);
+            msg += merchant.getMerchantId();
+        } catch (Exception ex) {
+            msg = "something wrong please try again";
 
         }
-        if(msg.contains(":"))
-        {
-            String[] arr=msg.split(":");
-            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        if (msg.contains(":")) {
+            String[] arr = msg.split(":");
+            return prepareMsgWithID(arr[0], Integer.parseInt(arr[1]));
         }
         return prepareMsg(msg);
     }
 
-    @PostMapping(value="/viewMerchantByID")
-    public ResponseEntity viewMerchantByID(@RequestParam("id") Integer id )
-    {
+    @PostMapping(value = "/viewMerchantByID")
+    public ResponseEntity viewMerchantByID(@RequestParam("id") Integer id) {
         //MerchantPOJO merchantPOJO=new MerchantPOJO();
-        Merchant merchant=merchantService.viewMerchantByID(id);
+        Merchant merchant = merchantService.viewMerchantByID(id);
         //merchantPOJO=MerchantToPOJOConverter.convertMerchantToPOJO(merchant,merchantPOJO);
-        if(null!=merchant) {
+        if (null != merchant) {
             return ResponseEntity.status(200).body(merchant);
-        }
-        else{
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
-    @GetMapping(value ="/viewMerchant")
-    public ResponseEntity viewMerchant()
-    {
-        List<Merchant> merchantList=merchantService.viewMerchant();
-        if(null!=merchantList && merchantList.size()>0) {
+    @GetMapping(value = "/viewMerchant")
+    public ResponseEntity viewMerchant() {
+        List<Merchant> merchantList = merchantService.viewMerchant();
+        if (null != merchantList && merchantList.size() > 0) {
             return ResponseEntity.status(200).body(merchantList);
-        }
-        else{
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
-    @GetMapping(value="/viewProduct")
-    public ResponseEntity viewProduct()
-    {
+    @GetMapping(value = "/viewProduct")
+    public ResponseEntity viewProduct() {
 
-        List<Product> productList=productService.viewProduct();
-        List<Product> productList1=new ArrayList<>();
-        if(null!=productList && productList.size()>0) {
-            for (Product p:productList) {
-            p.setImage( p.getImage());
-            productList1.add(p);
-            }
-          return ResponseEntity.status(200).body(productList1);
-        }
-        else{
-            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
-        }
-    }
-
-    @PostMapping(path="/viewProductByMerchant")
-    public ResponseEntity viewProductByMerchant(@RequestParam("id") Integer id)
-    {
-        List<Product> productList=productService.viewProductByMerchantID(id);
-        List<Product> productList1=new ArrayList<>();
-
-        if(null!=productList && productList.size()>0) {
-            for (Product p:productList) {
+        List<Product> productList = productService.viewProduct();
+        List<Product> productList1 = new ArrayList<>();
+        if (null != productList && productList.size() > 0) {
+            for (Product p : productList) {
                 p.setImage(p.getImage());
                 productList1.add(p);
             }
             return ResponseEntity.status(200).body(productList1);
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
-        else{
+    }
+
+    @PostMapping(path = "/viewProductByMerchant")
+    public ResponseEntity viewProductByMerchant(@RequestParam("id") Integer id, @RequestParam("status") String status) {
+        if (null != status && status.equals(LIVE)) {
+            return viewLiveProductByMerchant(id);
+        } else if (null != status && status.equals(DRAFT)) {
+            return viewDraftProductByMerchant(id);
+        } else if (null != status && status.equals(ARCH)) {
+            return viewArchProductByMerchant(id);
+        }
+
+        List<Product> productList = productService.viewProductByMerchantID(id);
+        List<Product> productList1 = new ArrayList<>();
+
+        if (null != productList && productList.size() > 0) {
+            for (Product p : productList) {
+                p.setImage(p.getImage());
+                productList1.add(p);
+            }
+            return ResponseEntity.status(200).body(productList1);
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
     /**
-     *
      * @param productId
      * @return product entiry or not found msg
      */
-    @PostMapping(value="/viewProductByID")
-    public ResponseEntity viewProductByID(@RequestParam("productId") Integer productId )
-    {
+    @PostMapping(value = "/viewProductByID")
+    public ResponseEntity viewProductByID(@RequestParam("productId") Integer productId) {
 
-        Product product=productService.viewProductByID(productId);
-        if(null!=product) {
+        Product product = productService.viewProductByID(productId);
+        if (null != product) {
             return ResponseEntity.status(200).body(product);
-        }
-        else{
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
-    @PostMapping(path="/addProduct")
-    public String addAndSaveProduct(@RequestBody Product product)
-    {
-        String msg="";
-        Product product1=null;
+    @PostMapping(path = "/addProduct")
+    public String addAndSaveProduct(@RequestBody Product product) {
+        String msg = "";
+        Product product1 = null;
         try {
-            if(null==product.getProductId())
-            {
-                msg= "Product added with productID:";
+            if (null == product.getProductId()) {
+                msg = "Product added with productID:";
+            } else {
+                msg = "Product Updated with productID:";
             }
-            else {
-                msg= "Product Updated with productID:";
-            }
-           // product.setStatus("Active");
-            if(null!=product.getProductId())
-            {
-                String filename=productService.viewProductByID(product.getProductId()).getImage();
+            // product.setStatus("Active");
+            if (null != product.getProductId()) {
+                String filename = productService.viewProductByID(product.getProductId()).getImage();
                 product.setImage(filename);
             }
-            product1=productService.addProduct(product);
+            product1 = productService.addProduct(product);
             //String QRdata=product1.getProductId()+":"+product1.getProductName()+":"+product1.getMechantID()+":"+product1.getProductPoint()+":"+product1.getDescription()+":"+product1.getOtherInfo()+":"+product1.getShowOnDay();
            /* String QRdata=product1.toString();
             String productQR=product1.getProductId()+product1.getProductName();
             QrCodeProcess(QRdata,productQR);*/
-            msg+=product1.getProductId();
+            msg += product1.getProductId();
 
-        }
-        catch (Exception ex)
-        {
-            msg="something wrong please try again";
+        } catch (Exception ex) {
+            msg = "something wrong please try again";
         }
 
-        if(msg.contains(":"))
-        {
-            String[] arr=msg.split(":");
-            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        if (msg.contains(":")) {
+            String[] arr = msg.split(":");
+            return prepareMsgWithID(arr[0], Integer.parseInt(arr[1]));
         }
         return prepareMsg(msg);
     }
 
 
-
     /**
-     *
      * @param multipartFile
      * @param id
      * @return
      */
-    @PostMapping(path="/addProduct2")
-    public String addAndSaveProduct1(@RequestParam("image") MultipartFile multipartFile,@RequestParam("id") Integer id) {
-        String msg="";
+    @PostMapping(path = "/addProduct2")
+    public String addAndSaveProduct1(@RequestParam("image") MultipartFile multipartFile, @RequestParam("id") Integer id) {
+        String msg = "";
         try {
 
-            String filename = id+multipartFile.getOriginalFilename().replaceAll(" ","_");
+            String filename = id + multipartFile.getOriginalFilename().replaceAll(" ", "_");
             String bashpath = servletContext.getRealPath("/productimage");
             FileUploadUtil.uploadFile(multipartFile.getBytes(), bashpath, filename);
             // get product detail
             Product product = productService.viewProductByID(id);
             product.setImage(filename);
             System.out.println(product.toString());
-            Product product1=productService.addProduct(product);
-            msg="Product image uploaded for:"+product.getProductId();
-        }catch (Exception ex)
-        {
-            msg=ex.getMessage();
+            Product product1 = productService.addProduct(product);
+            msg = "Product image uploaded for:" + product.getProductId();
+        } catch (Exception ex) {
+            msg = ex.getMessage();
         }
 
-        if(msg.contains(":"))
-        {
-            String[] arr=msg.split(":");
-            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        if (msg.contains(":")) {
+            String[] arr = msg.split(":");
+            return prepareMsgWithID(arr[0], Integer.parseInt(arr[1]));
         }
 
         return prepareMsg(msg);
 
     }
 
-    @PostMapping(path="/addUser")
-    public String addAndSaveUser(@RequestBody User user)
-    {
-        String msg="";
-        User user1=null;
+    @PostMapping(path = "/addUser")
+    public String addAndSaveUser(@RequestBody User user) {
+        String msg = "";
+        User user1 = null;
 
         //check user already exist
-        String userID=user.getUserId();
-        User user2=userService.getUserByID(userID);
-        if(null!=user2)
-        {
-         user.setId(user2.getId());
-        }
-        else{
+        String userID = user.getUserId();
+        User user2 = userService.getUserByID(userID);
+        if (null != user2) {
+            user.setId(user2.getId());
+        } else {
             user.setCreateddate(new Date(System.currentTimeMillis()));
         }
 
         try {
 
-            if(null==user.getId())
-            {
-                msg= "User added with userID:";
-            }
-            else {
-                msg= "User Updated with userID:";
+            if (null == user.getId()) {
+                msg = "User added with userID:";
+            } else {
+                msg = "User Updated with userID:";
             }
             // product.setStatus("Active");
-            user1=userService.saveUSer(user);
+            user1 = userService.saveUSer(user);
 
-            msg+=user.getId();
+            msg += user.getId();
 
+        } catch (Exception ex) {
+            msg = "something wrong please try again";
         }
-        catch (Exception ex)
-        {
-            msg="something wrong please try again";
-        }
-        if(msg.contains(":"))
-        {
-            String[] arr=msg.split(":");
-            return prepareMsgWithID(arr[0],Integer.parseInt(arr[1]));
+        if (msg.contains(":")) {
+            String[] arr = msg.split(":");
+            return prepareMsgWithID(arr[0], Integer.parseInt(arr[1]));
         }
         return prepareMsg(msg);
     }
 
-    @PostMapping(path="/captureProductByUser")
-    public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId)
-    {
-        String msg="";
+    @PostMapping(path = "/captureProductByUser")
+    public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId) {
+        String msg = "";
         try {
             // get product
-          Product product=productService.viewProductByID(productId);
-          // get user
-          User user=userService.getUserByID(userid);
-          // check user and product available
-          if(null!=user && null!=product)
-          {
-              int productPoint=product.getProductPoint();
-              // chekc user avialable point is greater than product point
-              if(Integer.parseInt(user.getPoint())>productPoint){
-                  // calculate point
-                  int remainPoint=Integer.parseInt(user.getPoint())-productPoint;
-                  user.setPoint(String.valueOf(remainPoint));
-                  // updtae user point
-                  User user1=userService.saveUSer(user);
+            Product product = productService.viewProductByID(productId);
+            // get user
+            User user = userService.getUserByID(userid);
+            // check user and product available
+            if (null != user && null != product && product.getStatus().equals(LIVE)) {
+                int productPoint = product.getProductPoint();
+                // chekc user avialable point is greater than product point
+                if (Integer.parseInt(user.getPoint()) > productPoint) {
+                    // calculate point
+                    int remainPoint = Integer.parseInt(user.getPoint()) - productPoint;
+                    user.setPoint(String.valueOf(remainPoint));
+                    // updtae user point
+                    User user1 = userService.saveUSer(user);
 
-                  // update mewrchant point as well
-                  long point=merchantRepository.findMerchantPoint(product.getMechantID());
-                  point=point-productPoint;
-                  merchantRepository.updateMerchantPoint(point,product.getMechantID());
+                    // update mewrchant point as well
+                    long point = merchantRepository.findMerchantPoint(product.getMechantID());
+                    // merchant Point is consider amount
+                    point = point - product.getDiscountprice();
+                    merchantRepository.updateMerchantPoint(point, product.getMechantID());
 
-                  // create history object
-                  UserPointHistory userPointHistory=HistoryUtil.createHistoryOnPurchase(user1,product);
-                  // save history in storage
-                  UserPointHistory userPointHistory1=userPointHistoryService.saveUserPointHistory(userPointHistory);
+                    // create history object
+                    UserPointHistory userPointHistory = HistoryUtil.createHistoryOnPurchase(user1, product);
+                    // save history in storage
+                    UserPointHistory userPointHistory1 = userPointHistoryService.saveUserPointHistory(userPointHistory);
 
-                  msg="Product Purchased successfully";
-              }
-              else
-              {
-                  msg="You don't have Sufficient Point balance";
-              }
+                    msg = "Product Purchased successfully";
+                } else {
+                    msg = "You don't have Sufficient Point balance";
+                }
 
-          }
-          else {
-              msg="something Wrong ! Might be product or User not found";
-          }
-        }
-        catch (Exception ex)
-        {
+            } else {
+                msg = "something Wrong ! Might be Product not live, Product or User not found ";
+            }
+        } catch (Exception ex) {
             System.err.println(ex);
-            msg="something wrong please try again"+ex.getMessage();
+            msg = "something wrong please try again" + ex.getMessage();
         }
         return prepareMsg(msg);
     }
-
 
 
     /**
-     *
      * @param data1
      * @param productQR
      * @throws WriterException
      * @throws IOException
      * @throws NotFoundException
      */
-    public void QrCodeProcess(String data1,String productQR) throws WriterException, IOException, NotFoundException {
+    public void QrCodeProcess(String data1, String productQR) throws WriterException, IOException, NotFoundException {
         // The data that the QR code will contain
         String data = data1;
 
         // The path where the image will get saved
         String bashpath = servletContext.getRealPath("/productqrcode/");
-        String path = bashpath+"/QR"+productQR+".png";
+        String path = bashpath + "/QR" + productQR + ".png";
 
         // Encoding charset
         String charset = "UTF-8";
 
         Map<EncodeHintType, ErrorCorrectionLevel> hashMap
                 = new HashMap<EncodeHintType,
-                                ErrorCorrectionLevel>();
+                ErrorCorrectionLevel>();
 
         hashMap.put(EncodeHintType.ERROR_CORRECTION,
                 ErrorCorrectionLevel.L);
@@ -402,45 +365,115 @@ public class AdminRestApi {
     }
 
 
-    @PostMapping(path="/viewLiveProductByMerchant")
-    public ResponseEntity viewLiveProductByMerchant(@RequestParam("id") Integer id)
-    {
-        List<Product> productList=productService.viewProductByMerchantID(id);
-        List<Product> productList1=new ArrayList<>();
-        productList = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(LIVE))).collect(Collectors.toList());
+    @PostMapping(path = "/viewLiveProductByMerchant")
+    public ResponseEntity viewLiveProductByMerchant(@RequestParam("id") Integer id) {
+        List<Product> productList = productService.viewProductByMerchantID(id);
+        if(null==productList || productList.size()<1)
+        {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+        List<Product> productList1 = new ArrayList<>();
+        productList = productList.stream().filter(p -> (null != p.getStatus() && p.getStatus().equals(LIVE))).collect(Collectors.toList());
 
-        if(null!=productList && productList.size()>0) {
-            for (Product p:productList) {
+        if (null != productList && productList.size() > 0) {
+            for (Product p : productList) {
                 p.setImage(p.getImage());
                 productList1.add(p);
             }
             return ResponseEntity.status(200).body(productList1);
-        }
-        else{
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
-    @PostMapping(path="/viewDraftProductByMerchant")
-    public ResponseEntity viewDraftProductByMerchant(@RequestParam("id") Integer id)
-    {
-        List<Product> productList=productService.viewProductByMerchantID(id);
-        List<Product> productList1=new ArrayList<>();
-        productList = productList.stream().filter(p -> (null!=p.getStatus() && p.getStatus().equals(DRAFT))).collect(Collectors.toList());
+    @PostMapping(path = "/viewDraftProductByMerchant")
+    public ResponseEntity viewDraftProductByMerchant(@RequestParam("id") Integer id) {
+        List<Product> productList = productService.viewProductByMerchantID(id);
+        if(null==productList || productList.size()<1)
+        {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+        List<Product> productList1 = new ArrayList<>();
+        productList = productList.stream().filter(p -> (null != p.getStatus() && p.getStatus().equals(DRAFT))).collect(Collectors.toList());
 
-        if(null!=productList && productList.size()>0) {
-            for (Product p:productList) {
+        if (null != productList && productList.size() > 0) {
+            for (Product p : productList) {
                 p.setImage(p.getImage());
                 productList1.add(p);
             }
 
             return ResponseEntity.status(200).body(productList1);
-        }
-        else{
+        } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
 
+    /**
+     * Return already purchased product
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping(path = "/viewArchProductByMerchant")
+    public ResponseEntity viewArchProductByMerchant(@RequestParam("id") Integer id) {
+        // get all Product purchased earlier
+        List<UserPointHistory> userPointHistoryList = userPointHistoryService.findByMerchantID(id);
+        if(null==userPointHistoryList || userPointHistoryList.size()<1)
+        {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+        // get all product id from user purchased
+        Set<Integer> integerSet = userPointHistoryList.stream().map(u -> Integer.valueOf(u.getProductId())).collect(Collectors.toSet());
+        // view product by id set
+        List<Product> productList = productService.viewProductByIDIn(integerSet);
 
+        if (null != productList && productList.size() > 0) {
+            return ResponseEntity.status(200).body(productList);
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
 
+    @PostMapping(path = "/viewArchProductByUser")
+    public ResponseEntity viewArchProductByUser(@RequestParam("id") String id) {
+        // get all Product purchased earlier
+        List<UserPointHistory> userPointHistoryList = userPointHistoryService.findByUserId(id);
+        if(null==userPointHistoryList || userPointHistoryList.size()<1)
+        {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+        // get all product id from user purchased
+        Set<Integer> integerSet = userPointHistoryList.stream().map(u -> Integer.valueOf(u.getProductId())).collect(Collectors.toSet());
+        // get product list
+        List<Product> productList = productService.viewProductByIDIn(integerSet);
+        if(null!=productList && productList.size()>0)    {
+            return ResponseEntity.status(200).body(productList);
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
+
+    /**
+     *
+     * @param country
+     * @return
+     */
+    @PostMapping(path = "/viewMerchantByCountry")
+    public ResponseEntity viewMerchantByCountry(@RequestParam("country") String country) {
+        /*if (null == country) {
+            return ResponseEntity.status(200).body(prepareMsg("Country must not null"));
+        }
+*/      List<Merchant> merchantList = merchantService.viewMerchant();
+        if (null != merchantList && merchantList.size() > 0) {
+            List<Merchant> merchantList1 = merchantList.stream().filter(m -> (null != m.getCountry() && m.getCountry().equalsIgnoreCase(country))).collect(Collectors.toList());
+            if(null != merchantList && merchantList1.size()>0) {
+                return ResponseEntity.status(200).body(merchantList1);
+            }
+            else {
+                return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+            }
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
 }

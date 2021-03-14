@@ -26,7 +26,7 @@ public class UserPointHistoryServiceImpl implements UserPointHistoryService {
     }
 
     @Override
-    public UserPointHistory findByUserId(String userId) {
+    public List<UserPointHistory> findByUserId(String userId) {
         return userPointHistoryRepository.findByUserId(userId);
     }
 

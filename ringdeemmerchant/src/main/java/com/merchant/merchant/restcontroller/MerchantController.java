@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -65,12 +67,42 @@ public class MerchantController {
         Merchant merchant=(Merchant) session.getAttribute("merchant");
         merchant=merchantService.viewMerchantByID(merchant.getMerchantId());
         session.setAttribute("merchant", merchant);
+
         List<Product> productList=productService.viewProductByMerchantID(merchant.getMerchantId());
         List<UserPointHistory> userPointHistoryList=userPointHistoryService.findByMerchantID(merchant.getMerchantId());
         int totalProduct=productList.size();
         long totalLiveProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Live"))).count();
         long totalDraftProduct=productList.stream().filter(p->(null!=p.getStatus() && p.getStatus().equals("Draft"))).count();
-      //  long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
+
+        Map<String,String> productSell=new HashMap<>();
+        for(Product p:productList){
+             String product=p.getProductId()+":"+p.getProductName();
+             long count=userPointHistoryList.stream().filter(u->(null!=u.getProductId() && u.getProductId().contains(p.getProductId().toString()))).count();
+             productSell.put(product,String.valueOf(count));
+        }
+
+       // Map<String,String> productSellL30day=new HashMap<>();
+  /*      Date date=new Date(System.currentTimeMillis());
+        String str[]=date.toString().split("-");
+        String startDate="";
+        String endDate="";
+        if(str.length>1)
+        {
+            startDate=str[0]+"-"+str[1]+"-"+"01";
+            startDate=str[0]+"-"+str[1]+"-"+"31";
+        }
+  */
+//        List<UserPointHistory> userPointHistoryList1=userPointHistoryList.stream().filter(u->(null!=u && (eTo(startDate)>0))
+       /* for(Product p:productList){
+            String product=p.getProductId()+":"+p.getProductName();
+
+            long count=userPointHistoryList.stream().filter(u->(null!=u.getProductId() && u.getProductId().equals(p.getProductId()))).count();
+            productSellL30day.put(product,String.valueOf(count));
+        }
+        */
+        model.addAttribute("graphPoductSell",productSell);
+
+        //  long totalSellPoint=userPointHistoryList.stream().map(u->Integer.parseInt(u.getProductPoint())).reduce(0,Integer::sum);
         model.addAttribute("totalProduct",totalProduct);
         model.addAttribute("totalDraftProduct",totalDraftProduct);
         model.addAttribute("totalLiveProduct",totalLiveProduct);

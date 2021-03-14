@@ -6,6 +6,7 @@ import com.merchant.merchant.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -63,5 +64,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProductByAdmin(int point, String status, Integer productId) {
         productRepository.updateProductByAdmin(point, status, productId);
+    }
+
+    @Override
+    public List<Product> viewProductByIDIn(Set<Integer> integerSet) {
+        return productRepository.findByProductIdIn(integerSet);
     }
 }
