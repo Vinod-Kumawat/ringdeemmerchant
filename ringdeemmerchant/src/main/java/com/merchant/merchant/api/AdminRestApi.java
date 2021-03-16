@@ -5,10 +5,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.merchant.merchant.bean.Merchant;
-import com.merchant.merchant.bean.Product;
-import com.merchant.merchant.bean.User;
-import com.merchant.merchant.bean.UserPointHistory;
+import com.merchant.merchant.bean.*;
 import com.merchant.merchant.dao.CountryRepository;
 import com.merchant.merchant.dao.MerchantRepository;
 import com.merchant.merchant.dao.UserPointHistoryRepository;
@@ -59,6 +56,9 @@ public class AdminRestApi {
     UserService userService;
     @Autowired
     UserPointHistoryService userPointHistoryService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Autowired
     MerchantRepository merchantRepository;
@@ -234,7 +234,6 @@ public class AdminRestApi {
     public String addAndSaveProduct1(@RequestParam("image") MultipartFile multipartFile, @RequestParam("id") Integer id) {
         String msg = "";
         try {
-
             String filename = id + multipartFile.getOriginalFilename().replaceAll(" ", "_");
             String bashpath = servletContext.getRealPath("/productimage");
             FileUploadUtil.uploadFile(multipartFile.getBytes(), bashpath, filename);
@@ -489,11 +488,28 @@ public class AdminRestApi {
         }
     }
 
+    @PostMapping(path = "/viewProductCategoryByMerchant")
+    public ResponseEntity viewProductCategoryByMerchant(@RequestParam("id") Integer id){
+        if(null!=id && id>0){
+            List<Category> categoryList=categoryService.findCategoryByMerchantId(id);
+            if(null!=categoryList && categoryList.size()>0) {
+                return ResponseEntity.status(200).body(categoryList);
+            }
+            else
+            {
+                return ResponseEntity.status(200).body(prepareMsg("No Record Found"));
+            }
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("Please Enter Valid Merchant Id"));
+        }
+    }
+
     @PostMapping(path = "/viewProductByMerchantAndCategory")
     public ResponseEntity viewProductByMerchantAndCategory(@RequestParam("id") Integer id, @RequestParam("category") String category) {
 
         List<Product> productList = productService.viewProductByMerchantID(id);
         List<Product> productList1 = new ArrayList<>();
+      /*
         if(null!=category && category.equalsIgnoreCase(CATE_COMBO)){
             productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_COMBO))).collect(Collectors.toList());
         }
@@ -511,6 +527,10 @@ public class AdminRestApi {
         }
         else if(null!=category && category.equalsIgnoreCase(CATE_MEAL_NON_VEG)){
             productList1=productList.stream().filter(p->(null!=p && p.getCategory().equalsIgnoreCase(CATE_MEAL_NON_VEG))).collect(Collectors.toList());
+        }
+        */
+        if(null!=category) {
+            productList1 = productList.stream().filter(p -> (null != p && p.getCategory().equalsIgnoreCase(category))).collect(Collectors.toList());
         }
 
         if (null != productList1 && productList1.size() > 0) {

@@ -82,12 +82,12 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Product Category</h4>
+                        <h4 class="page-title">Category</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Category</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Update Category</li>
                                 </ol>
                             </nav>
                         </div>
@@ -113,8 +113,11 @@
                             </div>
                         </c:if>
                             <form:form method="post" modelAttribute="categoryForm"  action="${contextPath}/merchant/saveCategory" class="form-horizontal"  enctype="multipart/form-data">
+                                <spring:bind path="categoryId">
+                                  <form:hidden path="categoryId"></form:hidden>
+                                </spring:bind>
                                 <div class="card-body">
-                                    <h4 class="card-title">Add Category </h4>
+                                    <h4 class="card-title">Update Category </h4>
                                     <div class="row">
                                         <div class="form-group col-sm-12">
                                             <label for="company" class="col-sm-3 text-left control-label col-form-label">Merchant ID</label>

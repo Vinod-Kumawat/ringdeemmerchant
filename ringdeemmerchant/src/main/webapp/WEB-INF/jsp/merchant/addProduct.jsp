@@ -148,12 +148,8 @@
                                             <div class="col-sm-9">
                                             <spring:bind path="category">
                                                <form:select path="category" class="form-control" id="country">
-                                                    <form:option value="Popular"  label="Popular" />
-                                                    <form:option value="Meals(Veg)"  label="Meals(Veg)" />
-                                                    <form:option value="Meals(Non-Veg)"  label="Meals(Non-Veg)" />
-                                                    <form:option value="Combos"  label="Combos" />
-                                                    <form:option value="Desserts"  label="Desserts" />
-                                                    <form:option value="New"  label="New" />
+                                                    <form:option value="NONE"  label="Select" />
+                                                    <form:options items="${categoryList}"/>
                                                </form:select>
                                             </spring:bind>
                                             </div>

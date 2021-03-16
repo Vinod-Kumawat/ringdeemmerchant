@@ -20,6 +20,14 @@
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/editMerchant/<%=merchant.getMerchantId() %>" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu"> View my Profile</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/addwallet" aria-expanded="false"><i class="mdi mdi-currency-btc"></i><span class="hide-menu"> Add Wallet Balnce</span></a></li>
 
+                        <!-- Add category -->
+                         <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu">Product Category </span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                                <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/addCategory" class="sidebar-link"><i class="mdi mdi-account-plus"></i><span class="hide-menu"> Add New Category</span></a></li>
+                                <li class="sidebar-item"><a href="<%=request.getContextPath()%>/merchant/viewCategory" class="sidebar-link"><i class="mdi mdi-view-list"></i><span class="hide-menu"> View Category </span></a></li>
+                            </ul>
+                         </li>
+
                          <!-- view Product -->
                          <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu">Product </span></a>
                              <ul aria-expanded="false" class="collapse  first-level">
@@ -37,7 +45,6 @@
                          </li>
 
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/merchantTransaction" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu"> Transaction</span></a></li>
-
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/addQuery" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> Help</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/allWalletMID" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> My Wallet Request</span></a></li>
                          <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<%=request.getContextPath()%>/merchant/allQueryMID" aria-expanded="false"><i class="mdi mdi-help"></i><span class="hide-menu"> My Help Request</span></a></li>

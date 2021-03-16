@@ -44,6 +44,10 @@ public class MerchantController {
     @Autowired
     MerchantQueryService merchantQueryService;
 
+    @Autowired
+    CategoryService categoryService;
+
+
     HttpSession session;
 
     /* ============== session check ======================== */
@@ -263,6 +267,7 @@ public class MerchantController {
             return logout(request,model);
         }
         ProductPOJO productPOJO=new ProductPOJO();
+        model.addAttribute("categoryList",getCategoryListModel(request));
         model.addAttribute("productForm", productPOJO);
         System.out.println("Add P");
         return "merchant/addProduct";
@@ -332,6 +337,7 @@ public class MerchantController {
         ProductPOJO productPOJO=new ProductPOJO();
         productPOJO=ProductToPOJOConverter.convertProductToPOJO(product,productPOJO);
         System.out.println(product.toString());
+        model.addAttribute("categoryList",getCategoryListModel(request));
         model.addAttribute("productForm",productPOJO);
         System.out.println("Edit P");
         return "merchant/editProduct";
@@ -500,5 +506,76 @@ public class MerchantController {
         return merchantID;
     }
 
+    // category
+    @RequestMapping("/merchant/addCategory")
+    public String addCategory(Model model,HttpServletRequest request){
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
+        Category category=new Category();
+        model.addAttribute("categoryForm", category);
+        return "merchant/category";
+    }
+
+    @RequestMapping("merchant/saveCategory")
+    public String saveCategory(@ModelAttribute("categoryForm") Category category, Model model,HttpServletRequest request) {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
+        Category category1=new Category();
+        category1=categoryService.saveCategory(category);
+        if(null!=category1 && category1.getCategoryId()>0){
+          if(null!=category.getCategoryId() && category.getCategoryId()>0){
+              model.addAttribute("message", "Category has been Updated Successfully with ID. " + category1.getCategoryId());
+          }else {
+              model.addAttribute("message", "Category has been added Successfully with ID. " + category1.getCategoryId());
+          }
+        }
+        model.addAttribute("categoryForm", new Category());
+        System.out.println("Add Category");
+        return "merchant/category";
+    }
+
+    @RequestMapping("/merchant/editCategory/{id}")
+    public String editCategory(@PathVariable Integer id ,Model model,HttpServletRequest request){
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+
+        Category category=categoryService.findByCategoryId(id);
+        model.addAttribute("categoryForm", category);
+        return "merchant/editCategory";
+    }
+
+    @RequestMapping(value = "/merchant/viewCategory")
+    public String viewCategory(Model model, HttpServletRequest request)
+    {
+        if(!checkMerchantSession(request))
+        {
+            return logout(request,model);
+        }
+        int mid=getMerchantIDBySession(request);
+        List<Category> categoryList=categoryService.findCategoryByMerchantId(mid);
+        model.addAttribute("categoryList", categoryList);
+        return "merchant/categoryList";
+    }
+
+
+    public Map<String, String> getCategoryListModel(HttpServletRequest request)
+    {
+        Map<String, String> categoryList2=new HashMap<>();
+        int mid=getMerchantIDBySession(request);
+        List<Category> categoryList=categoryService.findCategoryByMerchantId(mid);
+        for(Category category:categoryList)
+        {
+            categoryList2.put(category.getCategory(),category.getCategory());
+        }
+        return categoryList2;
+    }
 
 }
