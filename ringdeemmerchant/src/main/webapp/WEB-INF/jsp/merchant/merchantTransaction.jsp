@@ -21,7 +21,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="<%=request.getContextPath()%>/assets/images/favicon.png">
-    <title>Matrix Template - The Ultimate Multipurpose admin template</title>
+    <title>Ringdeem Merchant - Admin and Merchant Portal</title>
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/extra-libs/multicheck/multicheck.css">
     <link href="<%=request.getContextPath()%>/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
@@ -116,6 +116,8 @@
                                                 <th>Amount</th>
                                                 <th>Discount Price</th>
                                                 <th>ProductID</th>
+                                                <th>Country</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -130,7 +132,8 @@
                                                 <td>${tx.amount}</td>
                                                 <td>${tx.discountprice}</td>
                                                 <td>${tx.productId}</td>
-
+                                                <td>${tx.country}</td>
+                                                <td style="color:green">${tx.status}</td>
                                             </tr>
                                             </c:forEach>
                                         </c:if>
@@ -144,6 +147,8 @@
                                                 <th>Amount</th>
                                                 <th>Discount Price</th>
                                                 <th>ProductID</th>
+                                                <th>Country</th>
+                                                <th>Status</th>
                                             </tr>
                                         </tfoot>
                                     </table>

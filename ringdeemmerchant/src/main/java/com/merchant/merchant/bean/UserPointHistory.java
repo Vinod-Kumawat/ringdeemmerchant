@@ -28,6 +28,10 @@ public class UserPointHistory {
     private Timestamp datetime;
     @Column
     private Integer mechantID;
+    @Column
+    private String country;
+    @Column
+    private String status="success";
 
     public Integer getHistoryId() {
         return historyId;
@@ -93,6 +97,22 @@ public class UserPointHistory {
         this.datetime = datetime;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "UserPointHistory{" +
@@ -104,6 +124,8 @@ public class UserPointHistory {
                 ", discountprice='" + discountprice + '\'' +
                 ", datetime=" + datetime +
                 ", mechantID=" + mechantID +
+                ", country='" + country + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

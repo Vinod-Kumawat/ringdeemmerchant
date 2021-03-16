@@ -77,6 +77,11 @@ public class AdminRestApi {
         return generalMsg + msg + "\",\"Id\":" + id + endMsg;
     }
 
+    public String prepareMsgWithAmount(String msg, int amount) {
+        return generalMsg + msg + "\",\"amount\":" + amount + endMsg;
+    }
+
+
 
     @PostMapping(path = "/loginApp")
     public ResponseEntity getLogin(@RequestParam("username") String username, @RequestParam("password") String password) {
@@ -266,6 +271,7 @@ public class AdminRestApi {
         User user2 = userService.getUserByID(userID);
         if (null != user2) {
             user.setId(user2.getId());
+            user.setCreateddate(user2.getCreateddate());
         } else {
             user.setCreateddate(new Date(System.currentTimeMillis()));
         }
@@ -323,6 +329,7 @@ public class AdminRestApi {
                     UserPointHistory userPointHistory1 = userPointHistoryService.saveUserPointHistory(userPointHistory);
 
                     msg = "Product Purchased successfully";
+                    return prepareMsgWithAmount(msg,remainPoint);
                 } else {
                     msg = "You don't have Sufficient Point balance";
                 }
@@ -539,4 +546,17 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
+
+    @PostMapping(value = "/viewUserByID")
+    public ResponseEntity viewUserByID(@RequestParam("userId") String userId) {
+
+        User product = userService.getUserByID(userId);
+        if (null != product) {
+            return ResponseEntity.status(200).body(product);
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
+
+
 }

@@ -22,6 +22,8 @@ public class HistoryUtil {
         userPointHistory.setMechantID(product.getMechantID());
         userPointHistory.setAmount(product.getPrice().toString());
         userPointHistory.setDiscountprice(product.getDiscountprice().toString());
+        userPointHistory.setCountry(user1.getCountry());
+        userPointHistory.setStatus("success");
         return userPointHistory;
     }
 }

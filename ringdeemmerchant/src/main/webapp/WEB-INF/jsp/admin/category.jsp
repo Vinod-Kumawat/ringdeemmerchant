@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="<%=request.getContextPath()%>/assets/images/favicon.png">
-    <title>Matrix Template - The Ultimate Multipurpose admin template</title>
+    <title>Ringdeem Merchant - Admin and Merchant Portal</title>
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/libs/select2/dist/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/libs/jquery-minicolors/jquery.minicolors.css">
