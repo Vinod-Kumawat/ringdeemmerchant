@@ -21,5 +21,6 @@ public interface UserPointHistoryRepository extends JpaRepository<UserPointHisto
         List<UserPointHistory> findByProductId(String productID);
         @Transactional
         List<UserPointHistory> findByMechantID(Integer merchantId);
+
     }
 

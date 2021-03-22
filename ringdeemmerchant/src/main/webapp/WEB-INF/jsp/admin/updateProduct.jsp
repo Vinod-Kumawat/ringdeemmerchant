@@ -333,6 +333,7 @@
     <script src="<%=request.getContextPath()%>/assets/libs/jquery-minicolors/jquery.minicolors.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/quill/dist/quill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script>
         //***********************************//
         // For select 2
@@ -380,6 +381,68 @@
         var quill = new Quill('#editor', {
             theme: 'snow'
         });
+
+     $(document).ready(function(){
+               $("#merchantForm").validate({
+                 // Specify validation rules
+                 rules: {
+                   companyName: {
+                     required: true,
+                     minlength: 3
+                   },
+                   contactName: {
+                     required: true,
+                     minlength: 3
+                   },
+                   countryCode: {
+                     required: true,
+                     minlength: 3
+                   },
+                   businessAddress: {
+                     required: true,
+                     minlength: 3
+                   },
+                   businessNumber: {
+                    required: true,
+                    minlength: 3
+                   },
+                   taxNumber: {
+                    required: true,
+                    minlength: 6
+                   },
+                   vatTax: {
+                     required: true,
+                     minlength: 6
+                   },
+                   country: {
+                     required: true,
+                     minlength: 6
+                   },
+                   currency: {
+                     required: true,
+                     minlength: 6
+                   },
+                   point: {
+                     required: true,
+                     minlength: 6
+                   },
+     			  mobileNumber:{
+                     required: true,
+                     minlength: 10,
+                     maxlength: 10
+                   },
+                   merchantMail: {
+                     required: true,
+                     email: true
+                   },
+                   password: {
+                     required: true,
+                     minlength: 6
+                   }
+                 },
+
+               });
+             });
 
     </script>
 </body>

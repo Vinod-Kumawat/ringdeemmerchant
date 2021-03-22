@@ -35,6 +35,12 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+<style>
+.error{
+color:red
+}
+</style>
+
 </head>
 
 <body>
@@ -112,7 +118,7 @@
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
-                            <form:form method="post" modelAttribute="productForm" action="${contextPath}/merchant/saveProduct" class="form-horizontal" enctype="multipart/form-data">
+                            <form:form method="post" modelAttribute="productForm" id="productForm" action="${contextPath}/merchant/saveProduct" class="form-horizontal" enctype="multipart/form-data">
                                 <spring:bind path="productId">
                                 <form:hidden path="productId"></form:hidden>
                                 </spring:bind>
@@ -152,7 +158,7 @@
                                             <div class="col-sm-9">
                                                 <spring:bind path="category">
                                                     <form:select path="category" class="form-control" id="country">
-                                                       <form:option value="NONE"  label="Select" />
+                                                       <form:option value=""  label="Select" />
                                                        <form:options items="${categoryList}"/>
                                                     </form:select>
                                                 </spring:bind>
@@ -165,7 +171,7 @@
                                             <label for="price" class="col-sm-3 text-left control-label col-form-label">Price </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="price">
-                                                <form:input  type="text" path="price" class="form-control" id="productPoint" placeholder="Product Price" ></form:input>
+                                                <form:input  type="text" path="price" class="form-control" id="price" placeholder="Product Price" ></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -234,7 +240,7 @@
                                         <label>Start Date</label>
                                         <div class="input-group">
                                             <spring:bind path="startdate">
-                                                <form:input type="text" path="startdate" class="form-control startdate" placeholder="YYY-mm-dd"></form:input>
+                                                <form:input type="text" path="startdate" id="startdate" class="form-control startdate" placeholder="YYY-mm-dd"></form:input>
                                             </spring:bind>
                                             <div class="input-group-append">
                                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
@@ -245,7 +251,7 @@
                                         <label>End Date</label>
                                         <div class="input-group">
                                             <spring:bind path="enddate">
-                                                <form:input type="text" path="enddate" class="form-control enddate" placeholder="YYY-mm-dd"></form:input>
+                                                <form:input type="text" path="enddate" id="enddate" class="form-control enddate" placeholder="YYY-mm-dd"></form:input>
                                             </spring:bind>
                                             <div class="input-group-append">
                                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
@@ -329,6 +335,7 @@
     <script src="<%=request.getContextPath()%>/assets/libs/jquery-minicolors/jquery.minicolors.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/quill/dist/quill.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script>
         //***********************************//
         // For select 2
@@ -376,6 +383,60 @@
         var quill = new Quill('#editor', {
             theme: 'snow'
         });
+
+
+        jQuery.validator.addMethod("greaterThan",
+                function(value, element, params) {
+
+                    if (!/Invalid|NaN/.test(new Date(value))) {
+                        return new Date(value) > new Date($(params).val());
+                    }
+
+                    return isNaN(value) && isNaN($(params).val())
+                        || (Number(value) > Number($(params).val()));
+                },'Must be greater than {0}.');
+
+                 jQuery.validator.addMethod("currentDate",
+                        function(value, element) {
+
+                            var dt=new Date(value);
+                            var dt2=new Date();
+                                return (dt.getFullYear()>=dt2.getFullYear() && dt.getMonth()>=dt2.getMonth() && dt.getDate()>=dt2.getDate());
+                        },'Must be greater than or equal to current Date.');
+
+
+                $(document).ready(function(){
+                               $("#productForm").validate({
+                                 // Specify validation rules
+                                 rules: {
+                                   productName: {
+                                     required: true,
+                                     minlength: 3
+                                   },
+                                   category: {
+                                     required: true
+                                   },
+                                   price: {
+                                     required: true
+                                   },
+                                   discountprice: {
+                                     required: true
+                                   },
+                                   startdate:{
+                                   required:true,
+                                   date:true,
+                                   currentDate: true
+                                   },
+                                   enddate:{
+                                   required:true,
+                                   date:true,
+                                   greaterThan: "#startdate"
+                                   }
+                                 },
+
+                               });
+                             });
+
 
     </script>
 </body>

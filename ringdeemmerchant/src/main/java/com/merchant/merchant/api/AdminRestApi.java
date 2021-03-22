@@ -69,20 +69,42 @@ public class AdminRestApi {
     public String generalMsg = "{\"status\":\"200\",\"message\":\"";
     public String endMsg = "}";
 
+    /**
+     *
+     * @param msg
+     * @return String
+     */
     public String prepareMsg(String msg) {
         return generalMsg + msg + "\"" + endMsg;
     }
 
+    /**
+     *
+     * @param msg
+     * @param id
+     * @return String:response message with ID
+     */
     public String prepareMsgWithID(String msg, Integer id) {
         return generalMsg + msg + "\",\"Id\":" + id + endMsg;
     }
 
+    /**
+     *
+     * @param msg
+     * @param amount
+     * @return String: resonse message amount
+     */
     public String prepareMsgWithAmount(String msg, int amount) {
         return generalMsg + msg + "\",\"amount\":" + amount + endMsg;
     }
 
 
-
+    /**
+     *
+     * @param username
+     * @param password
+     * @return String message with MErchant details
+     */
     @PostMapping(path = "/loginApp")
     public ResponseEntity getLogin(@RequestParam("username") String username, @RequestParam("password") String password) {
         Merchant merchant = null;
@@ -97,6 +119,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param merchant
+     * @return
+     */
     @PostMapping(path = "/addMerchant")
     public String addAndSaveMerchant(@RequestBody Merchant merchant) {
         String msg = "";
@@ -119,6 +146,11 @@ public class AdminRestApi {
         return prepareMsg(msg);
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @PostMapping(value = "/viewMerchantByID")
     public ResponseEntity viewMerchantByID(@RequestParam("id") Integer id) {
         //MerchantPOJO merchantPOJO=new MerchantPOJO();
@@ -131,6 +163,10 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping(value = "/viewMerchant")
     public ResponseEntity viewMerchant() {
         List<Merchant> merchantList = merchantService.viewMerchant();
@@ -141,6 +177,10 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping(value = "/viewProduct")
     public ResponseEntity viewProduct() {
 
@@ -157,6 +197,12 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @param status
+     * @return
+     */
     @PostMapping(path = "/viewProductByMerchant")
     public ResponseEntity viewProductByMerchant(@RequestParam("id") Integer id, @RequestParam("status") String status) {
         if (null != status && status.equals(LIVE)) {
@@ -196,6 +242,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param product
+     * @return
+     */
     @PostMapping(path = "/addProduct")
     public String addAndSaveProduct(@RequestBody Product product) {
         String msg = "";
@@ -261,6 +312,11 @@ public class AdminRestApi {
 
     }
 
+    /**
+     *
+     * @param user
+     * @return
+     */
     @PostMapping(path = "/addUser")
     public String addAndSaveUser(@RequestBody User user) {
         String msg = "";
@@ -298,6 +354,12 @@ public class AdminRestApi {
         return prepareMsg(msg);
     }
 
+    /**
+     *
+     * @param userid
+     * @param productId
+     * @return
+     */
     @PostMapping(path = "/captureProductByUser")
     public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId) {
         String msg = "";
@@ -378,6 +440,11 @@ public class AdminRestApi {
     }
 
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @PostMapping(path = "/viewLiveProductByMerchant")
     public ResponseEntity viewLiveProductByMerchant(@RequestParam("id") Integer id) {
         List<Product> productList = productService.viewProductByMerchantID(id);
@@ -404,6 +471,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @PostMapping(path = "/viewDraftProductByMerchant")
     public ResponseEntity viewDraftProductByMerchant(@RequestParam("id") Integer id) {
         List<Product> productList = productService.viewProductByMerchantID(id);
@@ -452,6 +524,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @PostMapping(path = "/viewArchProductByUser")
     public ResponseEntity viewArchProductByUser(@RequestParam("id") String id) {
         // get all Product purchased earlier
@@ -495,6 +572,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @PostMapping(path = "/viewProductCategoryByMerchant")
     public ResponseEntity viewProductCategoryByMerchant(@RequestParam("id") Integer id){
         if(null!=id && id>0){
@@ -511,6 +593,12 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @param category
+     * @return
+     */
     @PostMapping(path = "/viewProductByMerchantAndCategory")
     public ResponseEntity viewProductByMerchantAndCategory(@RequestParam("id") Integer id, @RequestParam("category") String category) {
 
@@ -547,6 +635,11 @@ public class AdminRestApi {
         }
     }
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
     @PostMapping(value = "/viewUserByID")
     public ResponseEntity viewUserByID(@RequestParam("userId") String userId) {
 

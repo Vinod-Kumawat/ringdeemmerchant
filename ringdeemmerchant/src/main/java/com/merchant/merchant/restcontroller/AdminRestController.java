@@ -542,6 +542,7 @@ public class AdminRestController {
             return logout(request,model);
         }
         List<UserPointHistory> userPointHistoryList=userPointHistoryService.findAll();
+
         model.addAttribute("userPointHistoryList", userPointHistoryList);
         return "admin/transaction";
     }
@@ -555,6 +556,23 @@ public class AdminRestController {
         }
         List<UserPointHistory> userPointHistoryList=userPointHistoryService.findByMerchantID(id);
         model.addAttribute("merchantt",merchantService.viewMerchantByID(id));
+        model.addAttribute("userPointHistoryList", userPointHistoryList);
+        return "admin/transaction";
+    }
+
+    @RequestMapping(value = "/viewTransactionBycountry/{country}")
+    public String viewTransactionBycountry(@PathVariable String country, Model model, HttpServletRequest request)
+    {
+        if(!checkAdminSession(request))
+        {
+            return logout(request,model);
+        }
+        List<UserPointHistory> userPointHistoryList=userPointHistoryService.findAll();
+        if(country.equalsIgnoreCase("all")){
+
+        }else {
+            userPointHistoryList = userPointHistoryList.stream().filter(u -> (null != u.getCountry() && u.getCountry().equalsIgnoreCase(country))).collect(Collectors.toList());
+        }
         model.addAttribute("userPointHistoryList", userPointHistoryList);
         return "admin/transaction";
     }

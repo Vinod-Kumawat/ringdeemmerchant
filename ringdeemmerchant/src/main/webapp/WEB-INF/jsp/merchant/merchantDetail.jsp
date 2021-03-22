@@ -17,6 +17,18 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/extra-libs/multicheck/multicheck.css">
     <link href="<%=request.getContextPath()%>/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <!-- Data table end -->
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.bootstrap.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.bootstrap4.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.foundation.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.jqueryui.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/css/buttons.semanticui.min.css" rel="stylesheet">
+        <link href="<%=request.getContextPath()%>/assets/extra-libs/DataTables/DataTables-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Data table end -->
+
     <link href="<%=request.getContextPath()%>/dist/css/style.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -98,6 +110,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Merchant Details</h5>
+
+
                                 <div class="table-responsive">
                                     <table id="zero_config" class="table table-striped table-bordered">
                                         <thead>
@@ -224,13 +238,24 @@
     <!-- this page js -->
     <script src="<%=request.getContextPath()%>/assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
     <script src="<%=request.getContextPath()%>/assets/extra-libs/multicheck/jquery.multicheck.js"></script>
-    <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/datatables.min.js"></script>
-    <script>
-        /****************************************
-         *       Basic Table                   *
-         ****************************************/
-        $('#zero_config').DataTable();
-    </script>
+    <!-- data table -->
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/datatables.min.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/js/buttons.bootstrap4.min.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/js/dataTables.buttons.min.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/Buttons-1.7.0/js/buttons.html5.js"></script>
+        <script src="<%=request.getContextPath()%>/assets/extra-libs/DataTables/JSZip-2.5.0/jszip.js"></script>
+
+        <script>
+                        /****************************************
+                         *       Basic Table                   *
+                         ****************************************/
+                        $('#zero_config').DataTable({
+                        dom:'Bfrtip',
+                        buttons:['excelHtml5','csvHtml5']
+                        });
+                    </script>
+     <!-- Data table end-->
 
 </body>
 

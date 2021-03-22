@@ -27,6 +27,12 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+<style>
+.error{
+color:red
+}
+</style>
 </head>
 
 <body>
@@ -110,23 +116,23 @@
                             </div>
                         </c:if>
 
-                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" class="form-horizontal" enctype="multipart/form-data">
+                            <form:form method="post" modelAttribute="merchantForm" action="${contextPath}/saveMerchant" id="merchantForm" class="form-horizontal" enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Merchant</h4>
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="company" class="col-sm-3 text-left control-label col-form-label">Company Name</label>
+                                            <label for="companyName" class="col-sm-3 text-left control-label col-form-label">Company Name<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="companyName">
-                                                <form:input type="text" path="companyName" class="form-control" id="company" placeholder="Company Name"></form:input>
+                                                <form:input type="text" path="companyName" class="form-control" id="companyName" placeholder="Company Name"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="merchantEmail" class="col-sm-3 text-left control-label col-form-label">Merchant Email</label>
+                                            <label for="merchantMail" class="col-sm-3 text-left control-label col-form-label">Merchant Email<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="merchantMail">
-                                                <form:input  type="text" path="merchantMail" class="form-control" id="merchantEmail" placeholder="Merchant Email"></form:input>
+                                                <form:input  type="text" path="merchantMail" class="form-control" id="merchantMail" placeholder="Merchant Email"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -134,7 +140,7 @@
 
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="password" class="col-sm-3 text-left control-label col-form-label">Set Password</label>
+                                            <label for="password" class="col-sm-3 text-left control-label col-form-label">Set Password<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="password">
                                                 <form:input  type="text" path="password" class="form-control" id="password" placeholder="Password"></form:input>
@@ -142,10 +148,10 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="contactName" class="col-sm-3 text-left control-label col-form-label">Contact Name</label>
+                                            <label for="contactName" class="col-sm-3 text-left control-label col-form-label">Contact Name<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="contactName">
-                                               <form:input type="text" path="contactName" class="form-control" id="lname" placeholder="Last Name Here"></form:input>
+                                               <form:input type="text" path="contactName" class="form-control" id="contactName" placeholder="contact Name Here"></form:input>
                                             </spring:bind>
                                             </div>
                                         </div>
@@ -153,7 +159,7 @@
 
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="countryCode" class="col-sm-3 text-left control-label col-form-label">Country Code</label>
+                                            <label for="countryCode" class="col-sm-3 text-left control-label col-form-label">Country Code<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="countryCode">
                                                 <form:input type="text" path="countryCode" class="form-control" id="countryCode" placeholder="Country Code"></form:input>
@@ -161,7 +167,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="mobileNumber" class="col-sm-3 text-left control-label col-form-label">Mobile Number</label>
+                                            <label for="mobileNumber" class="col-sm-3 text-left control-label col-form-label">Mobile Number<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="mobileNumber">
                                                <form:input type="text" path="mobileNumber" class="form-control" id="mobileNumber" placeholder="Mobile Number here"></form:input>
@@ -192,7 +198,7 @@
                                     <h4>Invoice information</h4>
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="businessAddress" class="col-sm-6 text-left control-label col-form-label">Business Address</label>
+                                            <label for="businessAddress" class="col-sm-6 text-left control-label col-form-label">Business Address<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="businessAddress">
                                                 <form:textarea path="businessAddress" class="form-control" id="businessAddress" placeholder="Business Address"></form:textarea>
@@ -200,7 +206,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="businessNumber" class="col-sm-6 text-left control-label col-form-label">Business Number</label>
+                                            <label for="businessNumber" class="col-sm-6 text-left control-label col-form-label">Business Number<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="businessNumber">
                                                <form:input type="text" path="businessNumber" class="form-control" id="businessNumber" placeholder="Business Number here"></form:input>
@@ -211,7 +217,7 @@
 
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="taxNumber" class="col-sm-3 text-left control-label col-form-label">Tax Number </label>
+                                            <label for="taxNumber" class="col-sm-3 text-left control-label col-form-label">Tax Number <span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="taxNumber">
                                                 <form:input type="text" path="taxNumber" class="form-control" id="taxNumber" placeholder="Tax Number"></form:input>
@@ -219,7 +225,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="vatTax" class="col-sm-3 text-left control-label col-form-label">Vat Tax</label>
+                                            <label for="vatTax" class="col-sm-3 text-left control-label col-form-label">Vat Tax<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="vatTax">
                                                <form:input type="text" path="vatTax" class="form-control" id="vatTax" placeholder="Vat Tax"></form:input>
@@ -230,11 +236,11 @@
 
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="country" class="col-sm-3 text-left control-label col-form-label">Country </label>
+                                            <label for="country" class="col-sm-3 text-left control-label col-form-label">Country <span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="country">
                                                 <form:select path="country" class="form-control" id="country">
-                                                    <form:option value="NONE"  label="Select" />
+                                                    <form:option value=""  label="Select" />
                                                     <form:options items="${countryList}"/>
                                                 </form:select>
                                                 <!--
@@ -244,7 +250,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
-                                            <label for="currency" class="col-sm-3 text-left control-label col-form-label">Currency</label>
+                                            <label for="currency" class="col-sm-3 text-left control-label col-form-label">Currency<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="currency">
                                                <form:input type="text" path="currency" class="form-control" id="currency" placeholder="USD"></form:input>
@@ -255,7 +261,7 @@
 
                                     <div class=row>
                                         <div class="form-group col-sm-6">
-                                            <label for="point" class="col-sm-3 text-left control-label col-form-label">Amount/Payment</label>
+                                            <label for="point" class="col-sm-3 text-left control-label col-form-label">Amount/Payment<span style="color:red">*</style></label>
                                             <div class="col-sm-9">
                                             <spring:bind path="point">
                                                <form:input type="text" path="point" class="form-control" id="point" placeholder="300"></form:input>
@@ -340,6 +346,7 @@
     <script src="<%=request.getContextPath()%>/assets/libs/jquery-minicolors/jquery.minicolors.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/libs/quill/dist/quill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script>
         //***********************************//
         // For select 2
@@ -382,6 +389,67 @@
             theme: 'snow'
         });
 
+
+ $(document).ready(function(){
+          $("#merchantForm").validate({
+            // Specify validation rules
+            rules: {
+              companyName: {
+                required: true,
+                minlength: 3
+              },
+              contactName: {
+                required: true,
+                minlength: 3
+              },
+              countryCode: {
+                required: true,
+                minlength: 3
+              },
+              businessAddress: {
+                required: true,
+                minlength: 3
+              },
+              businessNumber: {
+               required: true,
+               minlength: 3
+              },
+              taxNumber: {
+               required: true,
+               minlength: 3
+              },
+              vatTax: {
+                required: true,
+                minlength: 3
+              },
+              country: {
+                required: true,
+                minlength: 3
+              },
+              currency: {
+                required: true,
+                minlength: 3
+              },
+              point: {
+                required: true
+              },
+			  mobileNumber:{
+                required: true,
+                minlength: 10,
+                maxlength: 10
+              },
+              merchantMail: {
+                required: true,
+                email: true
+              },
+              password: {
+                required: true,
+                minlength: 6
+              }
+            },
+
+          });
+        });
     </script>
 </body>
 
