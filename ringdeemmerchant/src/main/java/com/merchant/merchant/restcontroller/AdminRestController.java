@@ -20,6 +20,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -95,11 +97,15 @@ public class AdminRestController {
 
         // merchant by Country
         Map<String,Integer> merchantMap=new HashMap<>();
-        Set<String> countrySet=merchantList.stream().map(m->m.getCountry()).collect(Collectors.toSet());
+        Set<String> countrySet=merchantList.stream().filter(m-> m!=null && m.getCountry()!=null).map(m-> m.getCountry()).collect(Collectors.toSet());
         for (String s:countrySet){
-            if(null!=s && s.length()>0) {
-                List<Merchant> merchantList1 = merchantList.stream().filter(m->(null!=m && m.getCountry().equalsIgnoreCase(s))).collect(Collectors.toList());
-                merchantMap.put(s,merchantList1.size());
+            try {
+                if (null != s && s.length() > 0) {
+                    List<Merchant> merchantList1 = merchantList.stream().filter(m -> (null != m && m.getCountry()!=null && s!=null && m.getCountry().equalsIgnoreCase(s))).collect(Collectors.toList());
+                    merchantMap.put(s, merchantList1.size());
+                }
+            }catch (Exception ex){
+                // do nothing
             }
         }
         model.addAttribute("graphMerchantByCountry", merchantMap);
@@ -108,10 +114,19 @@ public class AdminRestController {
         Map<String,Integer> productMap=new HashMap<>();
         Set<String> merchantSet=merchantList.stream().map(m->(m.getMerchantId()+":"+m.getCompanyName())).collect(Collectors.toSet());
         for (String s:merchantSet) {
-            if (null != s && s.length() > 0) {
-                List<Product> productList1=productList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).collect(Collectors.toList());
-                productMap.put(s,productList1.size());
+            Integer count=0;
+            try {
+                if (null != s && s.length() > 0) {
+                    List<Product> productList1 = productList.stream().filter(p -> (null != p && p.getMechantID()!=null && s!=null && s.split(":")[0]!=null && p.getMechantID().toString().equals(s.split(":")[0]))).collect(Collectors.toList());
+                    count=productList1.size();
+                }
+            }catch (Exception ex){
+                // do nothing
             }
+            finally {
+                productMap.put(s,count);
+            }
+
         }
         model.addAttribute("graphProductByMercahnt", productMap);
 
@@ -121,11 +136,27 @@ public class AdminRestController {
 
         List<UserPointHistory> userPointHistoryList=userPointHistoryService.findAll();
          for (String s:merchantSet) {
-            if (null != s && s.length() > 0) {
-                long productCount=userPointHistoryList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p->p.getProductId()).count();
-                productSellMap.put(s,productCount);
-                long busessValue=userPointHistoryList.stream().filter(p->(null!=p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p->Long.valueOf(p.getDiscountprice())).reduce(Long.parseLong("0"),Long::sum);
-                businessSellMap.put(s,busessValue);
+             long productCount=0;
+             long busessValue=0;
+             if (null != s && s.length() > 0) {
+                try {
+                    productCount = userPointHistoryList.stream().filter(p -> (null != p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p -> p.getProductId()).count();
+
+                }catch (Exception ex){
+                    // nothing
+                }
+                finally {
+                    productSellMap.put(s, productCount);
+                }
+
+                try {
+                    busessValue = userPointHistoryList.stream().filter(p -> (null != p && p.getMechantID().toString().equals(s.split(":")[0]))).map(p -> Long.valueOf(p.getDiscountprice())).reduce(Long.parseLong("0"), Long::sum);
+
+                }catch (Exception ex){
+                    // do nothing
+                }finally {
+                    businessSellMap.put(s, busessValue);
+                }
             }
         }
         model.addAttribute("graphProductSellM", productSellMap);
@@ -211,6 +242,7 @@ public class AdminRestController {
     @RequestMapping("/saveMerchant")
     public String saveMerchant(@ModelAttribute("merchantForm") MerchantPOJO merchantForm,Model model,HttpServletRequest request)
     {
+        boolean flag=false;
         if(!checkAdminSession(request)){
             return logout(request,model);
         }
@@ -225,33 +257,45 @@ public class AdminRestController {
         String filename="";
         try {
             if(!merchantForm.getImage().isEmpty()) {
-                String basePath=request.getServletContext().getRealPath("/merchantimage");
-                filename=merchantForm.getContactName()+ merchantForm.getImage().getOriginalFilename().replace(" ","_");
-                try {
-                    FileUploadUtil.uploadFile(merchantForm.getImage().getBytes(),basePath,filename);
-                }catch (Exception ex)
-                {
-                    System.out.println(ex.getMessage());
+                String regex= "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";
+                Pattern p = Pattern.compile(regex);
+                Matcher m = p.matcher(merchantForm.getImage().getOriginalFilename());
+                if(!m.matches()){
+                    flag=true;
+                    model.addAttribute("ErrMessage","image should be jpeg, png, gif or bmp ");
+                }else {
+
+                    String basePath = request.getServletContext().getRealPath("/merchantimage");
+                    filename = merchantForm.getContactName() + merchantForm.getImage().getOriginalFilename().replace(" ", "_");
+                    try {
+                        FileUploadUtil.uploadFile(merchantForm.getImage().getBytes(), basePath, filename);
+                    } catch (Exception ex) {
+                        flag=true;
+                        model.addAttribute("ErrMessage","File uploading failed Please try again");
+                        System.out.println(ex.getMessage());
+                    }
                 }
             }
-            merchant=MerchantToPOJOConverter.convertPojoToMerchant(merchantForm,merchant,filename);
-            merchant=merchantService.addMerchant(merchant);
-            System.out.println(merchantForm.getCompanyName());
 
-            // model.addAttribute("merchantForm", new Merchant());
-            System.out.println("Add M: "+merchant);
+            if(flag){
+                // if file upload failed
+                model.addAttribute("merchantForm",merchantForm);
+            }else {
+                merchant = MerchantToPOJOConverter.convertPojoToMerchant(merchantForm, merchant, filename);
+                merchant = merchantService.addMerchant(merchant);
+                System.out.println(merchantForm.getCompanyName());
 
-            if(null==merchantForm.getMerchantId())
-            {
-                model.addAttribute("message","Merchant added with merchantID "+merchant.getMerchantId());
+                // model.addAttribute("merchantForm", new Merchant());
+                System.out.println("Add M: " + merchant);
+
+                if (null == merchantForm.getMerchantId()) {
+                    model.addAttribute("message", "Merchant added with merchantID " + merchant.getMerchantId());
+                } else {
+                    model.addAttribute("message", "Merchant Updated with merchantID " + merchant.getMerchantId());
+                }
+
+                model.addAttribute("merchantForm", new Merchant());
             }
-            else {
-                model.addAttribute("message","Merchant Updated with merchantID "+merchant.getMerchantId());
-            }
-
-            model.addAttribute("merchantForm", new Merchant());
-
-
         }
         catch (Exception ex)
         {
@@ -259,7 +303,7 @@ public class AdminRestController {
             model.addAttribute("ErrMessage","Merchant added with merchantID "+ex.getMessage());
 
         }
-                return "admin/addmerchant";
+      return "admin/addmerchant";
     }
 
     @RequestMapping(value="/editMerchant/{id}")

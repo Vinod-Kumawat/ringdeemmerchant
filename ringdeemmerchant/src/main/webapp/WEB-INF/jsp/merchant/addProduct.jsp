@@ -119,6 +119,11 @@ color:red
                               <strong>Success!</strong> ${message}.
                             </div>
                         </c:if>
+                        <c:if test="${not empty messageErr}">
+                            <div class="alert alert-danger">
+                              <strong>ERROR: !</strong> ${messageErr}.
+                            </div>
+                        </c:if>
                             <form:form method="post" modelAttribute="productForm" id="productForm" action="${contextPath}/merchant/saveProduct" class="form-horizontal"  enctype="multipart/form-data">
                                 <div class="card-body">
                                     <h4 class="card-title">Add New Product</h4>
@@ -209,8 +214,9 @@ color:red
                                             <label for="image" class="col-sm-3 text-left control-label col-form-label">Image </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="image">
-                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="Mobile Number here"></form:input>
+                                               <form:input type="file" path="image" onchange="Filevalidation()" class="form-control" accept="image/*" id="image" placeholder="Mobile Number here"></form:input>
                                             </spring:bind>
+                                            <span id="size" style="color:red"></span>
                                             </div>
                                         </div>
 
@@ -439,9 +445,11 @@ color:red
                              required: true
                            },
                            price: {
+                             number:true,
                              required: true
                            },
                            discountprice: {
+                             number:true,
                              required: true
                            },
                            startdate:{
@@ -459,6 +467,26 @@ color:red
                        });
                      });
 
+// file upload validation
+Filevalidation = () => {
+        const fi = document.getElementById('image');
+        // Check if any file is selected.
+        if (fi.files.length > 0) {
+            for (var i = 0; i <= fi.files.length - 1; i++) {
+
+                const fsize = fi.files.item(i).size;
+                const file = Math.round((fsize / 1024));
+                // The size of the file.
+                if (file >= 10240) {
+                    //alert("File too Big, please select a file less than 10mb");
+                     document.getElementById('size').innerHTML = "File too Big, please select a file less than 10mb";
+                     document.getElementById('image').value="";
+               } else {
+                  document.getElementById('size').innerHTML = "";
+                }
+            }
+        }
+    }
     </script>
 </body>
 

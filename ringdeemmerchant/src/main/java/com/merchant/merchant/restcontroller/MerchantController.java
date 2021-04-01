@@ -9,10 +9,14 @@ import com.merchant.merchant.util.FileUploadUtil;
 import com.merchant.merchant.util.MerchantToPOJOConverter;
 import com.merchant.merchant.util.ProductToPOJOConverter;
 import com.merchant.merchant.util.WalletToPOJOConverter;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +24,8 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -80,9 +86,13 @@ public class MerchantController {
 
         Map<String,String> productSell=new HashMap<>();
         for(Product p:productList){
-             String product=p.getProductId()+":"+p.getProductName();
-             long count=userPointHistoryList.stream().filter(u->(null!=u.getProductId() && u.getProductId().contains(p.getProductId().toString()))).count();
-             productSell.put(product,String.valueOf(count));
+            try {
+                String product = p.getProductId() + ":" + p.getProductName();
+                long count = userPointHistoryList.stream().filter(u -> (null != u.getProductId() && u.getProductId().contains(p.getProductId().toString()))).count();
+                productSell.put(product, String.valueOf(count));
+            }catch (Exception ex){
+                // do nothing
+            }
         }
 
        // Map<String,String> productSellL30day=new HashMap<>();
@@ -277,6 +287,8 @@ public class MerchantController {
     @RequestMapping("merchant/saveProduct")
     public String saveProduct(@ModelAttribute("productForm") ProductPOJO productForm, Model model,HttpServletRequest request)
     {
+        System.out.println("Vinod file upload");
+        boolean flag=false;
         if(!checkMerchantSession(request))
         {
             return logout(request,model);
@@ -286,14 +298,26 @@ public class MerchantController {
         String filename="";
         System.out.println(productForm.getImage().getOriginalFilename().replace(" ","_"));
         if(!productForm.getImage().isEmpty()) {
+
+            String regex= "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(productForm.getImage().getOriginalFilename());
+            if(!m.matches()){
+                flag=true;
+                model.addAttribute("messageErr","image should be jpeg, png, gif or bmp ");
+            }else{
             String basePath=request.getServletContext().getRealPath("/productimage");
             filename=productForm.getProductName()+productForm.getMechantID()+ productForm.getImage().getOriginalFilename().replace(" ","_");
             try {
                     FileUploadUtil.uploadFile(productForm.getImage().getBytes(),basePath,filename);
+
                 }catch (Exception ex)
                 {
+                    flag=true;
+                    model.addAttribute("messageErr","File uploading failed Please try again");
                     System.out.println(ex.getMessage());
                 }
+            }
         }
         else{
             if(null!=productForm.getProductId())
@@ -302,25 +326,27 @@ public class MerchantController {
             }
         }
 
+        if(flag){
+            // if file upload failed
+            model.addAttribute("categoryList",getCategoryListModel(request));
+            model.addAttribute("productForm",productForm);
+        }else {
+            try {
+                product = ProductToPOJOConverter.convertPojoToProduct(productForm, product, filename);
+                product = productService.addProduct(product);
+                if (null == productForm.getProductId()) {
+                    model.addAttribute("message", "Product added with ProductID " + product.getProductId());
+                } else {
 
-        try {
-            product=ProductToPOJOConverter.convertPojoToProduct(productForm,product,filename);
-            product=productService.addProduct(product);
-            if(null==productForm.getProductId())
-            {
-                model.addAttribute("message","Product added with ProductID "+product.getProductId());
+                    model.addAttribute("message", "Product Updated with productID " + product.getProductId());
+                }
+                model.addAttribute("productForm", new ProductPOJO());
+            } catch (Exception ex) {
+                model.addAttribute("categoryList",getCategoryListModel(request));
+                model.addAttribute("productForm", null != productForm ? productForm : new ProductPOJO());
+                model.addAttribute("messageErr", "Failed to add/update Product" + product.getProductId());
+
             }
-            else {
-
-                model.addAttribute("message","Product Updated with productID "+product.getProductId());
-            }
-            model.addAttribute("productForm", new ProductPOJO());
-        }
-        catch (Exception ex)
-        {
-            model.addAttribute("productForm", null!=productForm?productForm: new ProductPOJO());
-            model.addAttribute("message","Failed to add/update Product"+product.getProductId());
-
         }
         return "merchant/addProduct";
     }
@@ -577,5 +603,13 @@ public class MerchantController {
         }
         return categoryList2;
     }
+
+    /*@ExceptionHandler(MultipartException.class)
+    public String fileUploadException(MultipartException ex,HttpServletRequest request,Model model){
+        model.addAttribute("categoryList",getCategoryListModel(request));
+        model.addAttribute("messageErr","File Size should be less than 10 MB ");
+        model.addAttribute("productForm", new ProductPOJO());
+        return "merchant/addProduct";
+    }*/
 
 }

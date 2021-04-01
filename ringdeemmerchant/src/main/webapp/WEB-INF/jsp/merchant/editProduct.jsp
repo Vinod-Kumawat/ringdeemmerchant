@@ -213,8 +213,9 @@ color:red
                                             <label for="image" class="col-sm-3 text-left control-label col-form-label">Image </label>
                                             <div class="col-sm-9">
                                             <spring:bind path="image">
-                                               <form:input type="file" path="image" class="form-control" id="image" placeholder="Mobile Number here"></form:input>
+                                               <form:input type="file" path="image" accept="image/*" onchange="Filevalidation()"  class="form-control" id="image" placeholder="Mobile Number here"></form:input>
                                             </spring:bind>
+                                            <span id="size" style="color:red"></span>
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-6">
@@ -437,7 +438,26 @@ color:red
                                });
                              });
 
+// file upload validation
+Filevalidation = () => {
+        const fi = document.getElementById('image');
+        // Check if any file is selected.
+        if (fi.files.length > 0) {
+            for (var i = 0; i <= fi.files.length - 1; i++) {
 
+                const fsize = fi.files.item(i).size;
+                const file = Math.round((fsize / 1024));
+                // The size of the file.
+                if (file >= 10240) {
+                    //alert("File too Big, please select a file less than 10mb");
+                    document.getElementById('size').innerHTML = "File too Big, please select a file less than 10mb";
+                    document.getElementById('image').value="";
+               } else {
+                     document.getElementById('size').innerHTML = "";
+                }
+            }
+        }
+    }
     </script>
 </body>
 

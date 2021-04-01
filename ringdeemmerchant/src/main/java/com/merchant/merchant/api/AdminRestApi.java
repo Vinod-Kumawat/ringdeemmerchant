@@ -232,11 +232,15 @@ public class AdminRestApi {
      * @return product entiry or not found msg
      */
     @PostMapping(value = "/viewProductByID")
-    public ResponseEntity viewProductByID(@RequestParam("productId") Integer productId) {
+    public ResponseEntity viewProductByID(@RequestParam("productId") Integer productId, @RequestParam("merchantId") Integer merchantId) {
 
         Product product = productService.viewProductByID(productId);
+
         if (null != product) {
-            return ResponseEntity.status(200).body(product);
+            if(merchantId>0 && product.getMechantID()==merchantId){
+                return ResponseEntity.status(200).body(product);
+            }
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
@@ -361,12 +365,16 @@ public class AdminRestApi {
      * @return
      */
     @PostMapping(path = "/captureProductByUser")
-    public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId) {
+    public String captureProductByUser(@RequestParam("userId") String userid, @RequestParam("productId") Integer productId, @RequestParam("merchantId") Integer merchantId) {
         String msg = "";
         try {
             // get product
             Product product = productService.viewProductByID(productId);
             // get user
+            if(null!=product && merchantId>0 && product.getMechantID()!=merchantId){
+                return prepareMsg("Product is not available respective merchant");
+            }
+
             User user = userService.getUserByID(userid);
             // check user and product available
             if (null != user && null != product && product.getStatus().equals(LIVE)) {
@@ -625,7 +633,7 @@ public class AdminRestApi {
         }
         */
         if(null!=category) {
-            productList1 = productList.stream().filter(p -> (null != p && p.getCategory().equalsIgnoreCase(category))).collect(Collectors.toList());
+            productList1 = productList.stream().filter(p -> (null != p && p.getCategory().equalsIgnoreCase(category) && p.getStatus().equalsIgnoreCase(LIVE))).collect(Collectors.toList());
         }
 
         if (null != productList1 && productList1.size() > 0) {
@@ -634,6 +642,8 @@ public class AdminRestApi {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
     }
+
+
 
     /**
      *
@@ -646,6 +656,17 @@ public class AdminRestApi {
         User product = userService.getUserByID(userId);
         if (null != product) {
             return ResponseEntity.status(200).body(product);
+        } else {
+            return ResponseEntity.status(200).body(prepareMsg("No Record found"));
+        }
+    }
+
+    @PostMapping(value = "/viewTransactionHistory")
+    public ResponseEntity viewTransactionHistory(@RequestParam("merchantId") Integer merchatID) {
+
+        List<UserPointHistory> userPointHistoryList = userPointHistoryService.findByMerchantID(merchatID);
+        if (null != userPointHistoryList) {
+            return ResponseEntity.status(200).body(userPointHistoryList);
         } else {
             return ResponseEntity.status(200).body(prepareMsg("No Record found"));
         }
